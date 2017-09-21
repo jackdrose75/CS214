@@ -12,7 +12,7 @@
   */ 
 
 
-typedef struct valueType{
+typedef struct valueType{//this struct is gonna hange once testing is done, corresponds to movie_metatest rn
     char * color ;
     int  * duration ;
     int * director factor ;
@@ -24,7 +24,7 @@ typedef struct valueType{
 repeated elements, elements not present */
 
 /*next we need a list of all the different types of value we read from vsc
-We can have an array of structs of valueType.  this becomes our converted data to use
+We can have an array(pointers to blocks) of structs of valueType.  this becomes our converted data to use
 all elements in this list must be intialized when reading in file. 
 */
 typdef struct valueList{
