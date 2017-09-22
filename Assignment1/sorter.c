@@ -14,7 +14,11 @@ useful methods:		mergsort, fastest way to sort large datasets
 					printinf the list
 					debugging tools(flags, error checking etc)
 */
-int void main(int *argc, char* arg[]){
+int  main(int argc, char *argv[]){
 		FILE *file ; 
 
+
+	printf("arg count: %d\n", argc);
+	printf("argv has value: %s", argv[1]) ; 
+	return 0; 
 }
