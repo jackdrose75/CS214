@@ -1,28 +1,66 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
+struct type{
+ 
+    char* value ;
+  };
+
+//used to save strings into struct array
+char *token_string(char *str, int sizeofArray){
+    struct type array_input;
+
+
+}
+
+int main(int argc, char **argv){
+
+
+    //stores the input from the user as a string variable
+    char *sort_type = argv[1]; //get argument to sort by, -c for column
+    char *sort_topic = argv[2]; //get topic i.e. 'movies'
 
 /*
-plan:   read the first 'header file' for value types each entry will follow,
-        creat the list of all stuc valueTypes into valueList
-        once all values are in list, parse through by sorting
-things to remember:     memory allocation - dont free always initalize 
-                        allocate valuType as needed, dont creat list with predefined size(user determines)
-                        
-useful methods:     mergsort, fastest way to sort large datasets 
-                    finding if valueType exists
-                    printinf the list
-                    debugging tools(flags, error checking etc)
+    //catch if -c is not implemented
+    if (strcomp(sort_type, "") == 0) {
+        printf("Please specify type of sorting required. \n");
+        return 0;
+
+    //catch if movie not implemented
+    if (strcomp(sort_topic, "") == 0) {
+        printf("Please specify topic to sort by. \n");
+        return 0;
+    }
 */
 
+    //get stdin input
+    FILE* fp;
+    fp = stdin;
+    char temp[1000]; //buffer input 
+    fgets(temp, 1000, fp);
 
-int main(int argc, char* arg[]){
-        
-        FILE *fp;
-        fp = stdin;
-        char temp[1000];
-        fgets(temp, 1000, fp);
-        printf("%1000[^,]\n", temp);
+    //
+    char* ptr = temp;
 
-        return 0;
+    //store an array holding column entry
+    struct type entry;
+    entry.value = temp ;
+
+    //tokenization using comma delimiter
+    char* tokenp ;
+    tokenp = strtok(entry.value, ",") ;
+    // get categories
+    while(tokenp != NULL){
+        printf("%s \n", tokenp);
+        tokenp = strtok(NULL, ",") ;
+    }
+    //allocate space for the tokenized string array
+    int number = 1;
+    char** array_row = (char** )malloc(number*sizeof(char **));
+
+
+
+    return  0;
+
 }
