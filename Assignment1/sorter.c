@@ -5,14 +5,16 @@
 struct type{
  
     char* value ;
-  };
+};
 
 //used to save strings into struct array
-char *token_string(char *str, int sizeofArray){
+/*char *token_string(char *str, int sizeofArray){
     struct type array_input;
 
 
+
 }
+*/
 
 int main(int argc, char **argv){
 
@@ -35,12 +37,13 @@ int main(int argc, char **argv){
 */
 
     //get stdin input
-    FILE* fp;
-    fp = stdin;
     char temp[1000]; //buffer input 
-    fgets(temp, 1000, fp);
+    //fgets(temp, 1000, stdin);
+    while(scanf("%s",temp) != EOF) {
+        //printf("%s\n", temp);        
+    }
 
-    //
+
     char* ptr = temp;
 
     //store an array holding column entry
@@ -49,15 +52,13 @@ int main(int argc, char **argv){
 
     //tokenization using comma delimiter
     char* tokenp ;
-    tokenp = strtok(entry.value, ",") ;
+    tokenp = strtok(entry.value, ",") ; //separate by comma
+    
     // get categories
     while(tokenp != NULL){
         printf("%s \n", tokenp);
         tokenp = strtok(NULL, ",") ;
     }
-    //allocate space for the tokenized string array
-    int number = 1;
-    char** array_row = (char** )malloc(number*sizeof(char **));
 
 
 
