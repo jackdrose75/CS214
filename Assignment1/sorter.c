@@ -19,13 +19,15 @@ char *strParser(char *input){
   }
   
   //traverse char by char of input
-  while((input[i] != '\n')) {
+  //need to check for NULL to avoid segfault
+  while((input[i] != NULL)) {
     realloc(input, (sizeof(char)));
     i++;
   }
 
   input[i] = '\0';
-  printf("\nYou entered the string: %s\n", input);
+  printf("\nYou entered the string: \n%s\n", input);
+
 
 }
 
