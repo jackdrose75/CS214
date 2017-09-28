@@ -1,54 +1,66 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h> 
 
-
-/*
-plan:   read the first 'header file' for value types each entry will follow,
-        creat the list of all stuc valueTypes into valueList
-        once all values are in list, parse through by sorting
-things to remember:     memory allocation - dont free always initalize 
-                        allocate valuType as needed, dont creat list with predefined size(user determines)
-                        
-useful methods:     mergsort, fastest way to sort large datasets 
-                    finding if valueType exists
-                    printinf the list
-                    debugging tools(flags, error checking etc)
-*/
-
-	struct type{
-
+typedef struct type{
+ 
 	char* value ;
-}; 
+	struct type *next ; //pointer to next column	
+};
 
-int main(int argc, char* arg[]){
-        
-        FILE *fp;
-        fp = stdin;
-  	char temp[40] ;
-        fgets(temp,40, fp);
-       // printf("%s\n", temp);
-		 
-	char *ptr = temp;
-	struct type entry ;
-	entry.value = temp ; 
-	printf("%s\n",temp);
-	printf("%s\n", ptr) ;
-	printf("%s\n", entry.value) ; 	
+void mergesort(char *a, int size){
+	//initialize mid, assign its value
+	int mid = 0;
+	mid = size/2 ; 
+	// array into two, dynamically 
+	char *top, *bottom ;
 
-	
-	char *tokenp ;
-	tokenp = strtok(entry.value, ",") ; 
-	char entries[2] ; 
-	int i = 0 ;
-	while(tokenp != NULL){
-	printf("%s  ", tokenp); 
-	tokenp = strtok(NULL, ",") ;
-	i++ ;
-	
-	printf("%d\n", i) ; 
-	}	
+	//conditions
+	if(size = 2) {
+		return; 
+	}
+	else{ //create two top/bottom arrays
+		top = (char *)malloc(sizeof(int)*mid);
+	}
 
-
- 	return  0;
 }
+
+char *parse(char *row){
+
+	return row ; 
+}
+int main(int argc, char **argv){
+
+
+{
+
+    //get stdin input
+    char str[1000]; //buffer input 
+    
+	struct type row ; 
+	row.value = str ;
+	char *token ;
+	token = strtok(row. value, ",") ;
+	int i = 0;  
+ 	while(fgets(str, 1000,stdin) != NULL) {
+        	
+		if(i ==0) {  //first row read in, make catergory array 
+	
+		}
+	
+		else { //all data rows 
+		
+
+		}
+	printf("%s\n", str);
+	
+	       
+	    }
+
+
+
+
+
+    return  0;
+
+}
+
