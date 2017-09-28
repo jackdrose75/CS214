@@ -1,30 +1,132 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h> 
 
-<<<<<<< HEAD
 typedef struct type{
  
 	char* value ;
 	struct type *next ; //pointer to next column	
 };
 
-void mergesort(char *a, int size){
+
+void merge(char* a[], int low, int mid, int high){
+	
+	int topL = mid -low +1 ; 
+	int bottomL = high - mid ;
+	
+	char** top = malloc(sizeof(char *)*topL);
+	char** bottom = malloc(sizeof(char *)*bottomL);
+
+	int i ;
+	for(i = 0; i <topL ; i++){
+		top[i] = malloc(sizeof(a[low+1]));
+		strcpy(top[i], a[low+i]) ;
+	}
+	for(i = 0; i <bottomL; i ++){
+		bottom[i] = malloc(sizeof(a[mid+i+1])); 
+		strcpy(bottom[i], a[mid+i+1]);
+	}
+
+	int j =0 ;
+	int k = 0 ;
+	
+	k = low;
+	i = 0; 
+	
+	while(i ,topL && j < bottomL){
+		if(strcmp(top[i], bottom[j]) < 0){
+			strcpy(a[k++], top[i++]) ;
+		}
+		else{
+			strcpy(a[k++], bottom[j++]);
+		}
+	}
+}
+
+void mergesort(char* a[], int low, int high){
+	
+	if(low<high){
+		int mid = (low+high)/2 ;
+		mergesort(a, low, mid);
+		mergesort(a,mid+1, high) ;
+		merge(a,low,mid,high) ;
+	}
+}	
+
+
+/*
+
+void mergesort(char*a[], int size){
 	//initialize mid, assign its value
 	int mid = 0;
 	mid = size/2 ; 
 	// array into two, dynamically 
-	char *top, *bottom ;
-
+	char** top; 
+	char** bottom ;
+	
+	int i = 0; 
 	//conditions
 	if(size = 2) {
 		return; 
 	}
 	else{ //create two top/bottom arrays
 		top = (char *)malloc(sizeof(int)*mid);
+		bottom = (char *)malloc(sizeof(int)*(size - mid)) ;	
+		
+	//copy contents into two halfs
+		for(i = 0; i<mid; i++){
+			strcpy(top[i],  a[i]); 
+		}
+		for(i = mid; i<size; i++){
+			strcpy(bottom[i-mid], a[i])  ;
+		}
+		
+	//recursion
+	mergesort(top, mid);
+	mergesort(bottom, length-mid);
+	merge(a, top, bottom, length); 
+	}
+}//end mergesort
+
+
+void merge(char *a, char *top, char *bottom, int size){
+	
+//initalize variables 
+	int x =0, y = 0, z = 0;
+	int topL, bottomL ;
+	topL = size /2;
+	bottomL = size - topL ;
+	
+	//sort
+	while(i < topL && y < bottomL){
+	
+		if(strcmp(top[z], bottom[y]) <0) {
+			strcpy(a[z], top[x]) ;
+			x++;
+		}
+		else{
+			strcpy(a[z], bottom[y]) ;
+			x++; 
+		}
+		z++ ;
+	}
+	
+	while(x<topL){
+		strcpy(a[z], top[x]);
+		x++ ;
+		z++
 	}
 
+	while(y <bottomL){
+		strcpy(a[z], bottom[x]) ;
+		x++ ;
+		z++ ;
+	}
 }
-=======
+*/
+/* 
+
+
 typedef struct movie_data{
     char* cat_data; //holds category data (i.g. "Titanic" for category "movie_title")
     char* row_array; //holds pointer to array of row.
@@ -50,22 +152,17 @@ char *strParser(char *input){
 
   input[i] = '\0';
   printf("\nYou entered the string: \n%s\n", input);
->>>>>>> 5f7f5bd98799fbe86795f45ad922716205e2de84
 
 char *parse(char *row){
 
 	return row ; 
 }
-<<<<<<< HEAD
-int main(int argc, char **argv){
-=======
 
->>>>>>> 5f7f5bd98799fbe86795f45ad922716205e2de84
-
+*/
 int main(int argc, char **argv){
 
-<<<<<<< HEAD
-{
+
+
 
     //get stdin input
     char str[1000]; //buffer input 
@@ -91,11 +188,10 @@ int main(int argc, char **argv){
 	    }
 
 
-=======
-    //stores the input from the user as a string variable
+ //stores the input from the user as a string variable
     char *sort_type = argv[1]; //get argument to sort by, -c for column
     char *sort_topic = argv[2]; //get topic i.e. 'movies'
-
+/*
     int num = 1;
 
     //get input line by line from stdin
@@ -106,8 +202,8 @@ int main(int argc, char **argv){
         char *test = strParser(str_line);
 
     }
->>>>>>> 5f7f5bd98799fbe86795f45ad922716205e2de84
 
+*/
     return  0;
 
 }
