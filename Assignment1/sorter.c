@@ -39,45 +39,54 @@ int main(int argc, char **argv){
     char *_first_row = first_row; //need to keep track for strsep
     fgets(first_row, 1024, stdin); //get first row
     char *cat; //pulled category from strsep
-    int cat_index = 0;
-    int row_size = 1;
- 
+    int cat_index = 0; //index where category is
     while((cat = strsep(&_first_row, ",")) != NULL){
         if(strcmp(cat, sort_topic) == 0){
-            cat_index = row_size;  //index of where category is
             printf("%s, %d\n", cat, cat_index);
+            break;
         }
+        cat_index++;
     }
     free(first_row); //get rid of space used to hold first row
 
 
     //initialize array of structs
-    Record **outputArray = (Record **)malloc(sizeof(Record **));
+    Record **recordList = (Record **)malloc(sizeof(Record **));
+
+    printf("TEST\n");    
 
     //get input line by line from stdin
     char *row = (char *)malloc(sizeof(char *));
 
-    printf("TEST\n");
+
 
     int index = 0;
     int size = 1;
     while(fgets(row, 1024, stdin) != NULL){
-        outputArray[index] = (Record *)realloc(outputArray, size*sizeof(Record *));
-        char *tmp = getCat(row, cat_index);
+        
+        //temporary struct to hold parsed data
+        Record *tmpList;
+        tmpList = (Record *)realloc(recordList, 1*sizeof(Record *));
+        char *tmp = getCat(strdup(row), cat_index); //send row and cat index into getCat to be parsed, extract pulled field_data
+
         if (!tmp){
-            outputArray[index] -> field_data = NULL;
+            tmpList -> field_data = NULL;
         } else {
-            outputArray[index] -> field_data = tmp;
+            tmpList -> field_data = tmp;
         }
-        printf("Saved field_data: %s\n", outputArray[index]);
-        outputArray[index] -> original_row = row;
+        tmpList -> original_row = row;
+        
+        //resize recordList array
+        recordList = (Record **)realloc(recordList, size*sizeof(Record *));
+        recordList[index] = tmpList;
+        index++;
         size++;
     }
 
     printf("Here\n");
 
+    free(recordList);
     free(row);
-    free(outputArray);
     return 0;
 
 }
