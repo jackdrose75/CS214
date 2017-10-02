@@ -80,6 +80,8 @@ int main(int argc, char **argv){
     testArray = (char **)malloc(1*sizeof(char *));
     printf("POST-TEST\n");
 
+
+
     while((cat = strsep(&_first_row, ",")) != NULL){
         if(strcmp(cat, sort_topic) == 0){
             cat_index = row_size;  //index of where category is
@@ -92,14 +94,16 @@ int main(int argc, char **argv){
     free(first_row); //get rid of space used to hold first row
 
     free(testArray);
-
+/*
     //get input line by line from stdin
     char *row = (char *)malloc(sizeof(char *));
     char *_row = row;
 
     while(fgets(row, 1024, stdin) != NULL){
         itemize_row(row);
-/*        while((item = strsep(&_row, ",")) != NULL){
+        
+/
+        while((item = strsep(&_row, ",")) != NULL){
             if(_row == NULL){
                 break;
             }
@@ -111,9 +115,10 @@ int main(int argc, char **argv){
                 //printf("%s\n", item);
             }
         }
-        */
-    }
+/
 
+    }
+*/
     return 0;
 
 }
