@@ -15,7 +15,7 @@ typedef struct{
 char *getCat(char *input, int index){
     char *sub_str = NULL; //substring we want to return
     //check to see if input is null, else set substring ptr to input
-    for(sub_str = strtok(input, ","); sub_str && *sub_str; sub_str = strtok(NULL, ",\n")){
+    for(sub_str = strtok(input, ",\""); sub_str && *sub_str; sub_str = strtok(NULL, ",\n")){
         if (!--index){
             return sub_str;
         }
@@ -29,6 +29,8 @@ char *getCat(char *input, int index){
 
 int main(int argc, char **argv){
 
+    const int MAXSIZE = 1024;
+
     //stores the input from the user as a string variable
     char *sort_type = argv[1]; //get argument to sort by, -c for column
     char *sort_topic = argv[2]; //get topic i.e. 'movies'
@@ -37,7 +39,7 @@ int main(int argc, char **argv){
     //match by index number of column
     char *first_row = (char *)malloc(sizeof(char *));
     char *_first_row = first_row; //need to keep track for strsep
-    fgets(first_row, 1024, stdin); //get first row
+    fgets(first_row, MAXSIZE, stdin); //get first row
     char *cat; //pulled category from strsep
     int cat_index = 0; //index where category is
     while((cat = strsep(&_first_row, ",")) != NULL){
@@ -53,17 +55,12 @@ int main(int argc, char **argv){
     //initialize array of structs
     Record **recordList = (Record **)malloc(sizeof(Record **));
 
-    printf("TEST\n");    
-
     //get input line by line from stdin
-    char *row = (char *)malloc(sizeof(char *));
-
-
-
     int index = 0;
     int size = 1;
-    while(fgets(row, 1024, stdin) != NULL){
-        
+    char *row;
+    while(fgets(row, MAXSIZE, stdin) != NULL){
+                printf("TEST\n");
         //temporary struct to hold parsed data
         Record *tmpList;
         tmpList = (Record *)realloc(recordList, 1*sizeof(Record *));
@@ -84,7 +81,6 @@ int main(int argc, char **argv){
     }
 
     printf("Here\n");
-
     free(recordList);
     free(row);
     return 0;
