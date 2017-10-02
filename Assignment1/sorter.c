@@ -12,7 +12,7 @@ typedef struct{
 
 //split row into an array of substrings
 //returns an array
-char **itemize_row(char *input){
+char *getCat(char *input, int index){
     char *sub_str = NULL; //substring we want to return
 
     //check to see if input is null, else set substring ptr to input
@@ -21,44 +21,9 @@ char **itemize_row(char *input){
     }
     sub_str = input;
 
-    //delimit based on comma and quotations
-    bool inQuote = false;
-    int size = 1;
-    printf("TEST\n");
-    char **buffer = (char **)malloc(size*sizeof(char **));
-
-    //char *buffer;
-    printf("POST-TEST\n");
-    while(*sub_str){
-        switch(*sub_str){
-            case ',':
-                printf("case 1\n");
-                if(inQuote == false){
-                    buffer = (char **)realloc(buffer, size*sizeof(char **));
-                    buffer[size-1] = sub_str;
-                    size++;
-                    sub_str++;
-                }
-                break;
-
-            case '\"':
-                printf("case 2\n");
-                inQuote = !inQuote;
-
-            case '\n':
-                printf("case 3\n");
-                buffer = (char **)realloc(buffer, size*sizeof(char **));
-                buffer[size-1] = NULL;
-                break;
-
-            default:
-                printf("default case\n");
-                sub_str++;
-        }
-    }
-    return buffer;
-
 }
+
+
 
 int main(int argc, char **argv){
 
@@ -71,54 +36,39 @@ int main(int argc, char **argv){
     char *first_row = (char *)malloc(sizeof(char *));
     char *_first_row = first_row; //need to keep track for strsep
     fgets(first_row, 1024, stdin); //get first row
-    char *cat; //pulled category from strsep
-    int cat_index = 0;
+    char *field_data; //pulled category from strsep
+    int field_index = 0;
     int row_size = 1;
-
-    char **testArray;
-    printf("PRE-TEST\n");
-    testArray = (char **)malloc(1*sizeof(char *));
-    printf("POST-TEST\n");
-
-
-
-    while((cat = strsep(&_first_row, ",")) != NULL){
-        if(strcmp(cat, sort_topic) == 0){
-            cat_index = row_size;  //index of where category is
+ 
+    while((field_data = strsep(&_first_row, ",")) != NULL){
+        if(strcmp(field_data, sort_topic) == 0){
+            field_index = row_size;  //index of where category is
+            printf("%s, %d\n", field_data, field_index);
         }
-        testArray = (char **)realloc(testArray, row_size*sizeof(char **));
-        testArray[row_size-1] = cat;
-        printf("%s\n",testArray[row_size]);
-        row_size++;
     }
     free(first_row); //get rid of space used to hold first row
 
-    free(testArray);
-/*
+    //initialize array of structs
+    Record **outputArray = (Record **)malloc(sizeof(Record **));
+    
     //get input line by line from stdin
     char *row = (char *)malloc(sizeof(char *));
-    char *_row = row;
-
+    int index = 0;
+    int size = 1;
     while(fgets(row, 1024, stdin) != NULL){
-        itemize_row(row);
-        
-/
-        while((item = strsep(&_row, ",")) != NULL){
-            if(_row == NULL){
-                break;
-            }
-            else if(*_row == "\""){
-                item++;
-                char *_item = item;
-                item = strsep(&_row, "\"");
-            } else {
-                //printf("%s\n", item);
-            }
+        if (getCat(row, field_index) == NULL){
+            outputArray[index] -> category = NULL;
         }
-/
-
+        outputArray[index] = (Record *)realloc(outputArray, size*sizeof(Record *));
+        outputArray[index] -> category = field_data;
+        outputArray[index] -> original_row = row;
+        size++;
     }
-*/
+
+    printf("Here\n");
+
+    free(row);
+    free(outputArray);
     return 0;
 
 }
