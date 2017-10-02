@@ -1,3 +1,6 @@
+
+/*
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h> 
@@ -159,6 +162,8 @@ char *parse(char *row){
 }
 
 */
+
+/*
 int main(int argc, char **argv){
 
 
@@ -204,7 +209,10 @@ int main(int argc, char **argv){
     }
 
 */
+
+/*
     return  0;
 
 }
 
+*/
