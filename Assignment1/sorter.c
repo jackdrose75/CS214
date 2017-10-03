@@ -13,43 +13,80 @@ typedef struct{
 //
 
 void merge(Record** a, int low, int mid, int high){
-    
+
     int topL = mid - low + 1; 
     int bottomL = high - mid;
+    int i, j, k;
     
-    Record** top = (Record **)malloc(sizeof(Record **));
-    Record** bottom = (Record **)malloc(sizeof(Record **));
+    Record** top = (Record **)malloc(sizeof(Record **)*topL);
+    Record** bottom = (Record **)malloc(sizeof(Record **)*bottomL);
 
-    int i;
-    for(i = 0; i < topL ; i++){
+
+    printf("++++++");
+    printf("BEGIN\n");
+    for(int blah = 0; blah < 5; blah++) {
+        printf("%s ", a[blah] -> field_data);
+    }
+    printf("\n");
+    printf("++++++");
+
+    for(i = 0; i < topL; i++){
         //top[i] = malloc(sizeof(a[low+1]));
         top[i] = malloc(sizeof(Record));
-        top[i] = a[low + 1];
+        top[i] = a[low + i];
+        printf("a[low %d] : %s\n", low,  a[low]->field_data);
+        //printf("top updated w/ a: %s\n", top[i]->field_data);
         // strcpy(top[i], a[low+i]);
     }
-    for(i = 0; i < bottomL; i ++){
+    for(j = 0; j < bottomL; j++){
         //bottom[i] = malloc(sizeof(a[mid+i+1])); 
-        bottom[i] = malloc(sizeof(Record));
-        bottom[i] = a[mid+i+1];
+        bottom[j] = malloc(sizeof(Record));
+        bottom[j] = a[mid+1+j];
+        printf("bottom updateed w/ a: %s\n", bottom[j]->field_data);
         // strcpy(bottom[i], a[mid+i+1]);
     }
-
-    int j = 0;
-    int k = 0;
     
-    k = low;
-    i = 0; 
+    // merge temps back into records
+    i = 0; // starting index of first subarray
+    j = 0; // starting index of second subarray
+    k = low; // starting index of merged subarray
     
     while(i < topL && j < bottomL){
+        printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
+        printf("bottom[%d]->field_data : %s\n", i, bottom[j]->field_data);
         if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
-            a[k++] = top[i++];
+            a[k] = top[i++];
             //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;
         }
         else{
-            a[k++] = bottom[j++];
+            a[k] = bottom[j++];
             //strcpy(a[k++] -> field_data, bottom[j++] -> field_data);
         }
+        k++;
     }
+
+    //add remaining top
+    while (i < topL){
+        a[k] = top[i];
+        i++;
+        k++;
+    }
+    //add remaining bottom
+    while (j < bottomL){
+        a[k] = bottom[j];
+        j++;
+        k++;
+    }
+
+
+
+    printf("++++++");
+    for(int i = 0; i < k; i++) {
+        printf("%s ", a[i] -> field_data);
+    }
+    printf("\n");
+    printf("++++++");
+
 
     free(top);
     free(bottom);
@@ -164,17 +201,23 @@ int main(int argc, char **argv){
         recordList[index] = malloc(sizeof(Record));
 
         recordList[index] -> field_data = tmp;
-        printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
+        printf("field_data: %s\n", recordList[0]->field_data);
+        // printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
         
         recordList[index] -> original_row = _row;
-        printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
+        // printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
 
         index++;
         free(_row);
     }
 
-    printf("HELLO WORLD\n");
-
+    printf("++++++");
+    printf("BEFORE MERGESORT\n");
+    for(int i = 0; i < index; i++) {
+        printf("%s ", recordList[i] -> field_data);
+    }
+    printf("\n");
+    printf("++++++");
 
     //merge sort recordLists by field_data
     merge_sort(recordList, 0, index);
