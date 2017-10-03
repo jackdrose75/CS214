@@ -220,8 +220,6 @@ int main(int argc, char **argv){
     //merge sort recordLists by field_data
     merge_sort(recordList, 0, index);
 
-
-
     //printf("Here\n");
     free(recordList);
     return 0;

@@ -35,8 +35,8 @@
       <file leaf-file-name="sorter.c" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sorter.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="92">
-              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+            <state relative-caret-position="242">
+              <caret line="78" column="5" lean-forward="false" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -50,7 +50,11 @@
             <state relative-caret-position="376">
               <caret line="203" column="0" lean-forward="false" selection-start-line="203" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
               <folding>
-                <marker date="1506896568000" expanded="false" signature="14:61" ph="..." />
+                <marker date="1506992295000" expanded="true" signature="1:2520" ph="/.../" />
+                <marker date="1506992295000" expanded="false" signature="12:59" ph="..." />
+                <marker date="1506992295000" expanded="true" signature="2521:3235" ph="/.../" />
+                <marker date="1506992295000" expanded="true" signature="3237:4157" ph="/.../" />
+                <marker date="1506992295000" expanded="true" signature="4159:4183" ph="/.../" />
               </folding>
             </state>
           </provider>
@@ -143,12 +147,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1506896023387</updated>
-      <workItem from="1506896026184" duration="3966000" />
+      <workItem from="1506896026184" duration="4436000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3966000" />
+    <option name="totallyTimeSpent" value="4436000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
@@ -186,7 +190,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/sorter.c</url>
-          <line>61</line>
+          <line>168</line>
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="1" />
@@ -207,15 +211,19 @@
         <state relative-caret-position="376">
           <caret line="203" column="0" lean-forward="false" selection-start-line="203" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
           <folding>
-            <marker date="1506896568000" expanded="false" signature="14:61" ph="..." />
+            <marker date="1506992295000" expanded="true" signature="1:2520" ph="/.../" />
+            <marker date="1506992295000" expanded="false" signature="12:59" ph="..." />
+            <marker date="1506992295000" expanded="true" signature="2521:3235" ph="/.../" />
+            <marker date="1506992295000" expanded="true" signature="3237:4157" ph="/.../" />
+            <marker date="1506992295000" expanded="true" signature="4159:4183" ph="/.../" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sorter.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+        <state relative-caret-position="242">
+          <caret line="78" column="5" lean-forward="false" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
