@@ -199,13 +199,11 @@ int main(int argc, char **argv){
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
 
         recordList[index] = malloc(sizeof(Record));
-
         recordList[index] -> field_data = tmp;
-        printf("field_data: %s\n", recordList[0]->field_data);
-        // printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
+        printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
         
         recordList[index] -> original_row = _row;
-        // printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
+        printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
 
         index++;
         free(_row);
