@@ -2,19 +2,75 @@
 #include<stdlib.h>
 #include<string.h>
 #include <stdbool.h>
+//#include "sorter.h"
 
-#define maxlen 100000
 
 //
 typedef struct{
     char *field_data; //holds category data (i.g. "Titanic" for category "movie_title")
     char *original_row; //holds pointer to array of row.
 } Record;
+//
+
+void merge(Record** a, int low, int mid, int high){
+    
+    int topL = mid - low + 1; 
+    int bottomL = high - mid;
+    
+    Record** top = (Record **)malloc(sizeof(Record **));
+    Record** bottom = (Record **)malloc(sizeof(Record **));
+
+    int i;
+    for(i = 0; i < topL ; i++){
+        //top[i] = malloc(sizeof(a[low+1]));
+        top[i] = malloc(sizeof(Record));
+        top[i] = a[low + 1];
+        // strcpy(top[i], a[low+i]);
+    }
+    for(i = 0; i < bottomL; i ++){
+        //bottom[i] = malloc(sizeof(a[mid+i+1])); 
+        bottom[i] = malloc(sizeof(Record));
+        bottom[i] = a[mid+i+1];
+        // strcpy(bottom[i], a[mid+i+1]);
+    }
+
+    int j = 0;
+    int k = 0;
+    
+    k = low;
+    i = 0; 
+    
+    while(i < topL && j < bottomL){
+        if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
+            a[k++] = top[i++];
+            //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;
+        }
+        else{
+            a[k++] = bottom[j++];
+            //strcpy(a[k++] -> field_data, bottom[j++] -> field_data);
+        }
+    }
+
+    free(top);
+    free(bottom);
+}
+
+void merge_sort(Record** a, int low, int high){
+    
+    if (low < high){
+        int mid = (low + high)/2;
+        merge_sort(a, low, mid);
+        merge_sort(a, mid+1, high);
+        merge(a, low, mid, high);
+    }
+} 
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-//split row into an array of substrings
-//returns an array
+//returns category substring
 char *getCat(char *input, int index){
+
     char *sub_str = NULL; //substring we want to return
     //check to see if input is null, else set substring ptr to input
     for(sub_str = strtok(input, ",\""); sub_str && *sub_str; sub_str = strtok(NULL, ",\n")){
@@ -25,6 +81,34 @@ char *getCat(char *input, int index){
 
     return NULL;
 
+
+/*
+    char *sub_str = NULL; //substring we want to return
+    bool inQuote = false;
+
+    int index_count = 0;
+
+    while(*input){
+        switch(char){
+            case ',':
+                index_count++;
+                if(inQuote == false){
+
+                }
+                break;
+            case '\"':
+                inQuote = !inQuote;
+
+            default:
+
+        }
+    }
+*/
+}
+
+//parse substring until next delimiter and return
+char *stringBuild(char *rawString, char *delimiter){
+    return NULL;
 }
 
 
@@ -53,8 +137,6 @@ int main(int argc, char **argv){
         cat_index++;
     }
 
-    printf("%s\n", cat);
-
     //free(first_row); //get rid of space used to hold first row
 
     //initialize array of structs
@@ -62,16 +144,16 @@ int main(int argc, char **argv){
 
     //get input line by line from stdin
     int index = 0;
-    int size = 1;
     char row[MAXSIZE];
 
     while(fgets(row, MAXSIZE, stdin) != NULL){
 
         char *_row = strdup(row);
-        printf("_row : %s\n", _row);
+
         //temporary struct to hold parsed data
         Record **tmpList;
         tmpList = (Record **)realloc(recordList, 1*sizeof(Record **));
+
         if(tmpList == NULL){
             printf("Error with tmpList\n");
             return 0;
@@ -79,28 +161,25 @@ int main(int argc, char **argv){
         recordList = tmpList;
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
 
-        if (!tmp){
-            printf("!tmp: %s\n", tmp);
-            //tmpList -> field_data = NULL;
-            strncpy(recordList[index] -> field_data, NULL, MAXSIZE);
-        } else {
-            printf("tmp: %s\n", tmp);
-            //tmpList -> field_data = tmp;
-            printf("index : %d\n", index);
-            strncpy(recordList[index] -> field_data, tmp, MAXSIZE);
-            printf("recordList[%d] : %s\n", index, recordList[index]->field_data);
-        }
-        //tmpList -> original_row = _row;
-        printf("tmp otherwise: %s\n", _row);
-        strncpy(recordList[index] -> original_row, _row, MAXSIZE);
+        recordList[index] = malloc(sizeof(Record));
+
+        recordList[index] -> field_data = tmp;
+        printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
         
-        //resize recordList array
-        // recordList = (Record **)realloc(recordList, size*sizeof(Record *));
-        // recordList[index] = tmpList;
+        recordList[index] -> original_row = _row;
+        printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
+
         index++;
-        size++;
         free(_row);
     }
+
+    printf("HELLO WORLD\n");
+
+
+    //merge sort recordLists by field_data
+    merge_sort(recordList, 0, index);
+
+
 
     //printf("Here\n");
     free(recordList);
