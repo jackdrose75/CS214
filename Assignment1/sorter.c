@@ -104,26 +104,29 @@ int main(int argc, char **argv){
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
-        printf("tmpList -> field_data: %s\n", tmpList->field_data);        
+        //printf("tmpList -> field_data: %s\n", tmpList->field_data);        
         //save original string row to tmpList.original_row
         tmpList -> original_row = _row;
-        printf("tmpList -> original_row : %s\n", tmpList->original_row);
+        //printf("tmpList -> original_row : %s\n", tmpList->original_row);
 
         //add tmpList struct to array of structs recordList[index] at index
         recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
         recordList[index] = (Record *)malloc(sizeof(Record *)); 
         recordList[index] = tmpList;
 
+        printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);        
+        printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
+
         index++;
-        free(_row);
+        //free(_row);
 
     }
 
-    printf("++++++");
+    printf("\n\n++++++");
     printf("BEFORE MERGESORT\n");
     int i;
     for(i = 0; i < index; i++) {
-        printf("%s ", recordList[i] -> field_data);
+        printf("field_data: %s\n original_row: %s\n ", recordList[i] -> field_data, recordList[i] -> original_row);
     }
     printf("\n");
     printf("++++++");

@@ -16,11 +16,14 @@ void merge(Record** a, int low, int mid, int high){
     Record** top = (Record **)malloc(sizeof(Record **)*topL);
     Record** bottom = (Record **)malloc(sizeof(Record **)*bottomL);
 
+    printf("high : %d\n", high);
+    printf("mid : %d\n", mid);
+    printf("low : %d\n", low);
 
     printf("++++++");
     printf("BEGIN\n");
     int blah;
-    for(blah = 0; blah < 5; blah++) {
+    for(blah = 0; blah < high; blah++) {
         printf("%s ", a[blah] -> field_data);
     }
     printf("\n");
