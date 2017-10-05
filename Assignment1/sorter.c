@@ -90,27 +90,33 @@ int main(int argc, char **argv){
         char *_row = strdup(row);
 
         //temporary struct to hold parsed data
-        Record **tmpList;
-        //tmpList = (Record **)realloc(recordList, 1*sizeof(Record **));
-        tmpList = (Record **)malloc(1*sizeof(Record **));
+        Record *tmpList;
+        tmpList = (Record *)malloc(sizeof(Record *));
 
+        /*
         if(tmpList == NULL){
             printf("Error with tmpList\n");
             return 0;
         }
-        //recordList = tmpList;
-        tmpList = recordList;
-        char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
+        */
 
-        recordList[index] = malloc(sizeof(Record **));
-        recordList[index] -> field_data = tmp;
-        printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
-        
-        recordList[index] -> original_row = _row;
-        printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
+        //parse string for category field_data (i.e. director_name => James Cameron)
+        char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
+        //save category into tmpList.field_data
+        tmpList -> field_data = tmp;
+        printf("tmpList -> field_data: %s\n", tmpList->field_data);        
+        //save original string row to tmpList.original_row
+        tmpList -> original_row = _row;
+        printf("tmpList -> original_row : %s\n", tmpList->original_row);
+
+        //add tmpList struct to array of structs recordList[index] at index
+        recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
+        recordList[index] = (Record *)malloc(sizeof(Record *)); 
+        recordList[index] = tmpList;
 
         index++;
         free(_row);
+
     }
 
     printf("++++++");
