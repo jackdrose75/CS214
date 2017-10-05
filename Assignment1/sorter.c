@@ -102,7 +102,7 @@ int main(int argc, char **argv){
         tmpList = recordList;
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
 
-        recordList[index] = malloc(sizeof(Record));
+        recordList[index] = malloc(sizeof(Record *));
         recordList[index] -> field_data = tmp;
         printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);
         
