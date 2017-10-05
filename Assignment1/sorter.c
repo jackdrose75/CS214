@@ -24,7 +24,8 @@ void merge(Record** a, int low, int mid, int high){
 
     printf("++++++");
     printf("BEGIN\n");
-    for(int blah = 0; blah < 5; blah++) {
+    int blah;
+    for(blah = 0; blah < 5; blah++) {
         printf("%s ", a[blah] -> field_data);
     }
     printf("\n");
@@ -81,7 +82,7 @@ void merge(Record** a, int low, int mid, int high){
 
 
     printf("++++++");
-    for(int i = 0; i < k; i++) {
+    for(i = 0; i < k; i++) {
         printf("%s ", a[i] -> field_data);
     }
     printf("\n");
@@ -100,7 +101,7 @@ void merge_sort(Record** a, int low, int high){
         merge_sort(a, mid+1, high);
         merge(a, low, mid, high);
     }
-} 
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -110,7 +111,7 @@ char *getCat(char *input, int index){
 
     char *sub_str = NULL; //substring we want to return
     //check to see if input is null, else set substring ptr to input
-    for(sub_str = strtok(input, ",\""); sub_str && *sub_str; sub_str = strtok(NULL, ",\n")){
+    for(sub_str = strtok(input, ","); sub_str && *sub_str; sub_str = strtok(NULL, ",\n")){
         if (!index--){
             return sub_str;
         }
@@ -189,13 +190,15 @@ int main(int argc, char **argv){
 
         //temporary struct to hold parsed data
         Record **tmpList;
-        tmpList = (Record **)realloc(recordList, 1*sizeof(Record **));
+        //tmpList = (Record **)realloc(recordList, 1*sizeof(Record **));
+        tmpList = (Record **)malloc(1*sizeof(Record **));
 
         if(tmpList == NULL){
             printf("Error with tmpList\n");
             return 0;
         }
-        recordList = tmpList;
+        //recordList = tmpList;
+        tmpList = recordList;
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
 
         recordList[index] = malloc(sizeof(Record));
@@ -211,7 +214,8 @@ int main(int argc, char **argv){
 
     printf("++++++");
     printf("BEFORE MERGESORT\n");
-    for(int i = 0; i < index; i++) {
+    int i;
+    for(i = 0; i < index; i++) {
         printf("%s ", recordList[i] -> field_data);
     }
     printf("\n");
