@@ -101,7 +101,7 @@ int main(int argc, char **argv){
         */
 
         //parse string for category field_data (i.e. director_name => James Cameron)
-        char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
+        char *tmp = getCat(_row, cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
         //printf("tmpList -> field_data: %s\n", tmpList->field_data);        
@@ -113,26 +113,36 @@ int main(int argc, char **argv){
         recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
         recordList[index] = (Record *)malloc(sizeof(Record *)); 
         recordList[index] = tmpList;
-
+/*
         printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);        
         printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
-
+*/
         index++;
-        //free(_row);
-
     }
+
 
     printf("\n\n++++++");
     printf("BEFORE MERGESORT\n");
     int i;
     for(i = 0; i < index; i++) {
-        printf("field_data: %s\n original_row: %s\n ", recordList[i] -> field_data, recordList[i] -> original_row);
+        printf("%s - ", recordList[i] -> field_data);
     }
     printf("\n");
     printf("++++++");
 
     //merge sort recordLists by field_data
-    merge_sort(recordList, 0, index);
+    // printf("\nindex-1: %d\n", index-1);
+
+    merge_sort(recordList, 0, index-1);
+
+    printf("\n\n++++++");
+    printf("AFTER MERGESORT\n");
+    for(i = 0; i < index; i++) {
+        printf("%s - ", recordList[i] -> field_data);
+    }
+    printf("\n");
+    printf("++++++");
+
 
     //printf("Here\n");
     free(recordList);
