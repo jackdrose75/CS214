@@ -7,7 +7,17 @@ typedef struct rec{
     char *original_row; //holds pointer to array of row.
 } Record;
 
+// merge function to be called after merge_sort
+void merge(Record** a, int low, int mid, int high);
 
+// merge_sort function that will recursively call merge and itself
+void merge_sort(Record** a, int low, int high);
+
+// Parses string for delimiters and returns pointer to the string
+char *getCat(char *input, int index);
+
+// Builds string if it detects a ""
+char *stringBuild(char *rawString, char *delimiter);
 
 
 

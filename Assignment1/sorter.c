@@ -3,7 +3,7 @@
 #include<string.h>
 #include <stdbool.h>
 #include "sorter.h"
-#include "mergesort.c"
+
 
 // Main file to parse and pass data
 
