@@ -14,7 +14,7 @@
 //finds out length of substring
 //finds length of substring by substracting pEnd and pStart
 //malloc space for new char array and copy characters to it 
-char *getCat(char *line, int catIndex){
+void *getCat(char *line, int catIndex){
 
     char *pStart = line; //keeps track of beginning of substring
     char *pEnd = line; //continues until finds substring index
@@ -23,22 +23,33 @@ char *getCat(char *line, int catIndex){
     int strLen = 0;
     bool inQuote = false;
 
+    // flags to check if substring is float or int
+    bool isInt = false;
+    int numDots = 0;
+    bool isFloat = false;
+
     while(*pEnd){
         switch(*pEnd){
             case ',':
                 if(inQuote == false){
-                    //printf("pStart : %s\n", pStart);
+                    //build string
                     if(strIndex == catIndex){
                         //create and return substring
-                         char *str = buildString(pStart, pEnd);
+                         //char *str = buildString(pStart, pEnd);
                          //printf("%s\n", str);
-                        return buildString(pStart, pEnd);;
+                        return buildString(pStart, pEnd, isInt, isFloat);;
                     } 
                     
                     //if strIndex != catindex, move pStart to pEnd
                     pEnd++;
                     pStart = pEnd;
                     strIndex++; //update strIndex
+
+                    //reset flags
+                    isInt = false;
+                    numDots = 0;
+                    isFloat = false;
+
                 } else {
                     pEnd++;
                 }
@@ -50,17 +61,50 @@ char *getCat(char *line, int catIndex){
                     inQuote = !inQuote;
                     pEnd++;
                     pStart = pEnd;
+                    //reset flags
+                    isInt = false;
+                    numDots = 0;
+                    isFloat = false;
+
                 } else {
+                    //build string
                     inQuote = !inQuote;
                     if (strIndex++ == catIndex){
                         pEnd--;
-                        return buildString(pStart, pEnd);
+                        return buildString(pStart, pEnd, isInt, isFloat);
                     }
                     pEnd = pEnd+2;
                     pStart = pEnd;
+                    //reset flags
+                    isInt = false;
+                    numDots = 0;
+                    isFloat = false;
                 }
 
             default:
+                //check if character is not a digit
+                if(!isdigit(*pEnd)){
+                    //check if float
+                    if(*pEnd == '.'){
+                        if (isInt && (numDots == 0)){
+                            //is a float so far
+                            isFloat = true;
+                            isInt = false;
+                        } else if (isInt && (numDots > 0)){
+                            //is a char
+                            isFloat = false;
+                            isInt = false;
+                        }
+                        numDots++;
+                    } else {
+                        isInt = false;
+                        isFloat = false;
+                    }
+                } else if((pEnd-pStart) == 0){
+                    //start of char
+                    isInt = true;
+                }
+
                 pEnd++;
         }
     }
@@ -68,14 +112,27 @@ char *getCat(char *line, int catIndex){
     return "\0";
 }
 
-char *buildString(char *start, char *end){
+void *buildString(char *start, char *end, bool isInt, bool isFloat){
 
     int strLen = end - start;
-    char *strBuffer = (char *)malloc((strLen+1)*sizeof(char *));
+    void *buffer;
+    if(!isInt && !isFloat){
+        buffer = (char *)malloc((strLen+1)*sizeof(char *));
+    } else if (isInt){
+        buffer = (int *)malloc((strLen+1)*sizeof(int));
+    } else{
+        buffer = (float *)malloc((strLen+1)*sizeof(float));
+    }
+    
     //copies chars from one string to another for strLen
-    memcpy(strBuffer, start, strLen);
-    strBuffer[strLen+1] = '\0';
-    return strBuffer;
+    memcpy(buffer, start, strLen);
+    if(!isInt && !isFloat){
+        buffer[strLen+1] = '\0';
+    }
+
+    // if isAllInts:
+        // recordList[] -> type = 0
+    return buffer;
 }
 
 
@@ -95,12 +152,18 @@ int main(int argc, char **argv){
 
     char *cat; //pulled category from strsep
     int cat_index = 0; //index where category is
+    int int_index = 0; //for use to find length
     while((cat = strsep(&_first_row, ",")) != NULL){
         if(strcmp(cat, sortTopic) == 0){
             //printf("%s, %d\n", cat, cat_index);
-            break;
+            int_index++;
         }
         cat_index++;
+    }
+    //input not found
+    if(int_index > cat_index){
+        printf("Input not valid\n");
+        return 0;
     }
 
     //initialize array of structs
