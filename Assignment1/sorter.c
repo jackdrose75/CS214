@@ -74,7 +74,7 @@ char *buildString(char *start, char *end){
     char *strBuffer = (char *)malloc((strLen+1)*sizeof(char *));
     //copies chars from one string to another for strLen
     memcpy(strBuffer, start, strLen);
-    strBuffer[strLen+1] = "\0";
+    strBuffer[strLen+1] = '\0';
     return strBuffer;
 }
 
