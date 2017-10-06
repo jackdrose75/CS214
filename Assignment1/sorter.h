@@ -2,8 +2,17 @@
 #define SORTER_
 
 //Defines our structs to store data about each row
-typedef struct rec{
-    char *field_data; //holds category data (i.g. "Titanic" for category "movie_title")
+/*typedef struct{
+    typedef enum {POINTER, INT} DataType;
+    union{
+        int i_data;
+        char *c_data;
+    } field_data;
+    char *original_row; //holds pointer to array of row.
+} Record; */
+
+typedef struct{
+    char *field_data;
     char *original_row; //holds pointer to array of row.
 } Record;
 

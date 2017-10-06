@@ -60,9 +60,6 @@ char *getCat(char *line, int catIndex){
                     pStart = pEnd;
                 }
 
-                //reverse inQuote
-                //inQuote = !inQuote;
-                //pEnd++; //extra pEnd++ gets it past ending quote
             default:
                 pEnd++;
         }
@@ -131,10 +128,11 @@ int main(int argc, char **argv){
         //parse string for category field_data (i.e. director_name => James Cameron)
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
         //test ifdigit
-        if(isdigit(*tmp)){
+/*        if(isdigit(*tmp)){
             printf("PRINTING DIGITS\n");
             int _tmp = atoi(tmp);
         }
+*/
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
         //printf("tmpList -> field_data: %s\n", tmpList->field_data);        
