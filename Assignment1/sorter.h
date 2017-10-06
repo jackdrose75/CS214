@@ -14,10 +14,10 @@ void merge(Record** a, int low, int mid, int high);
 void merge_sort(Record** a, int low, int high);
 
 // Parses string for delimiters and returns pointer to the string
-char *getCat(char *input, int index);
+char *getCat(char *line, int catIndex);
 
 // Builds string if it detects a ""
-char *stringBuild(char *rawString, char *delimiter);
+char *buildString(char *begin, char *end);
 
 
 

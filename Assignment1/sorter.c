@@ -2,54 +2,84 @@
 #include<stdlib.h>
 #include<string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "sorter.h"
 
 
 // Main file to parse and pass data
 
-//returns category substring
-char *getCat(char *input, int index){
+//Returns category substring
+//parses through input string by looking for delimiters
+//pStart marks beginning of category word, pEnd marks end by delimiter
+//finds out length of substring
+//finds length of substring by substracting pEnd and pStart
+//malloc space for new char array and copy characters to it 
+char *getCat(char *line, int catIndex){
 
-    char *sub_str = NULL; //substring we want to return
-    //check to see if input is null, else set substring ptr to input
-    for(sub_str = strtok(input, ","); sub_str && *sub_str; sub_str = strtok(NULL, ",\n")){
-        if (!index--){
-            return sub_str;
-        }
-    }
+    char *pStart = line; //keeps track of beginning of substring
+    char *pEnd = line; //continues until finds substring index
 
-    return NULL;
-
-
-/*
-    char *sub_str = NULL; //substring we want to return
+    int strIndex = 0;
+    int strLen = 0;
     bool inQuote = false;
 
-    int index_count = 0;
-
-    while(*input){
-        switch(char){
+    while(*pEnd){
+        switch(*pEnd){
             case ',':
-                index_count++;
                 if(inQuote == false){
-
+                    //printf("pStart : %s\n", pStart);
+                    if(strIndex == catIndex){
+                        //create and return substring
+                         char *str = buildString(pStart, pEnd);
+                         //printf("%s\n", str);
+                        return buildString(pStart, pEnd);;
+                    } 
+                    
+                    //if strIndex != catindex, move pStart to pEnd
+                    pEnd++;
+                    pStart = pEnd;
+                    strIndex++; //update strIndex
+                } else {
+                    pEnd++;
                 }
                 break;
+
             case '\"':
-                inQuote = !inQuote;
+                //printf(">>>%c >> %ld \n", *pEnd, (pEnd-pStart));
+                if (!inQuote){
+                    inQuote = !inQuote;
+                    pEnd++;
+                    pStart = pEnd;
+                } else {
+                    inQuote = !inQuote;
+                    if (strIndex++ == catIndex){
+                        pEnd--;
+                        return buildString(pStart, pEnd);
+                    }
+                    pEnd = pEnd+2;
+                    pStart = pEnd;
+                }
 
+                //reverse inQuote
+                //inQuote = !inQuote;
+                //pEnd++; //extra pEnd++ gets it past ending quote
             default:
-
+                pEnd++;
         }
     }
-*/
+
+    return "\0";
 }
 
-//parse substring until next delimiter and return
-char *stringBuild(char *rawString, char *delimiter){
-    return NULL;
-}
+char *buildString(char *start, char *end){
 
+    int strLen = end - start;
+    char *strBuffer = (char *)malloc((strLen+1)*sizeof(char *));
+    //copies chars from one string to another for strLen
+    memcpy(strBuffer, start, strLen);
+    strBuffer[strLen+1] = "\0";
+    return strBuffer;
+}
 
 
 int main(int argc, char **argv){
@@ -57,26 +87,24 @@ int main(int argc, char **argv){
     const int MAXSIZE = 1024;
 
     //stores the input from the user as a string variable
-    char *sort_type = argv[1]; //get argument to sort by, -c for column
-    char *sort_topic = argv[2]; //get topic i.e. 'movies'
+    char *sortType = argv[1]; //get argument to sort by, -c for column
+    char *sortTopic = argv[2]; //get topic i.e. 'movies'
 
     //get categories inputted by use
     //match by index number of column
     char first_row[MAXSIZE];// = (char *)malloc(MAXSIZE);
     fgets(first_row, MAXSIZE, stdin); //get first row
-    char *_first_row = first_row; //need to keep track for strsep
+    char *_first_row = first_row; //tmp to keep track for strsep
 
     char *cat; //pulled category from strsep
     int cat_index = 0; //index where category is
     while((cat = strsep(&_first_row, ",")) != NULL){
-        if(strcmp(cat, sort_topic) == 0){
+        if(strcmp(cat, sortTopic) == 0){
             //printf("%s, %d\n", cat, cat_index);
             break;
         }
         cat_index++;
     }
-
-    //free(first_row); //get rid of space used to hold first row
 
     //initialize array of structs
     Record **recordList = (Record **)malloc(sizeof(Record **));
@@ -101,7 +129,12 @@ int main(int argc, char **argv){
         */
 
         //parse string for category field_data (i.e. director_name => James Cameron)
-        char *tmp = getCat(_row, cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
+        char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
+        //test ifdigit
+        if(isdigit(*tmp)){
+            printf("PRINTING DIGITS\n");
+            int _tmp = atoi(tmp);
+        }
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
         //printf("tmpList -> field_data: %s\n", tmpList->field_data);        
@@ -125,7 +158,7 @@ int main(int argc, char **argv){
     printf("BEFORE MERGESORT\n");
     int i;
     for(i = 0; i < index; i++) {
-        printf("%s - ", recordList[i] -> field_data);
+        printf("%s\n", recordList[i] -> field_data);
     }
     printf("\n");
     printf("++++++");
@@ -138,7 +171,7 @@ int main(int argc, char **argv){
     printf("\n\n++++++");
     printf("AFTER MERGESORT\n");
     for(i = 0; i < index; i++) {
-        printf("%s - ", recordList[i] -> field_data);
+        printf("%s\n", recordList[i] -> field_data);
     }
     printf("\n");
     printf("++++++");
