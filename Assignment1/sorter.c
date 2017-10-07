@@ -126,9 +126,9 @@ void *buildString(char *start, char *end, bool isInt, bool isFloat){
     
     //copies chars from one string to another for strLen
     memcpy(buffer, start, strLen);
-    if(!isInt && !isFloat){
-        buffer[strLen+1] = '\0';
-    }
+    //if(!isInt && !isFloat){
+    //    buffer[strLen+1] = '\0';
+    //}
 
     // if isAllInts:
         // recordList[] -> type = 0
@@ -151,18 +151,18 @@ int main(int argc, char **argv){
     char *_first_row = first_row; //tmp to keep track for strsep
 
     char *cat; //pulled category from strsep
-    int cat_index = 0; //index where category is
-    int int_index = 0; //for use to find length
+    int cat_index = -1; //index where category is
+    int int_index = 0; //index for total size of line
     while((cat = strsep(&_first_row, ",")) != NULL){
-        if(strcmp(cat, sortTopic) == 0){
-            //printf("%s, %d\n", cat, cat_index);
-            int_index++;
+        if(strstr(cat, sortTopic)){
+            cat_index = int_index;
         }
-        cat_index++;
+        int_index++;
     }
-    //input not found
-    if(int_index > cat_index){
-        printf("Input not valid\n");
+
+    //check if valid input
+    if (cat_index == -1){
+        printf("%s is not a valid input.\n", sortTopic);
         return 0;
     }
 
