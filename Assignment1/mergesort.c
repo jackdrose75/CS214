@@ -53,19 +53,6 @@ void merge(Record** a, int low, int mid, int high){
     while(i < topL && j < bottomL){
         /*printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
         printf("bottom[%d]->field_data : %s\n", i, bottom[j]->field_data);*/
-
-        // if top[i] -> type == 0 and bottom[i] -> type == 0:
-        //  (int *)top[i] -> field_data < bottom[i] -> field_data
-        // else if top[i] -> type == 1 and bottom[i] -> type == 1:
-        //  (float *)
-        // else if top[i] -> type == 2 and bottom[i] -> type == 2:
-        //  (char *)
-        // else
-        //      some fallback for invalid input
-
-
-
-
         if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
             a[k] = top[i++];
             //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;
@@ -89,9 +76,6 @@ void merge(Record** a, int low, int mid, int high){
         j++;
         k++;
     }
-
-
-
 
 
 /*
