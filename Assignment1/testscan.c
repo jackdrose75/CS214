@@ -45,17 +45,21 @@ void dirSearch(char *path){
             }
             else if (pid == 0){
                 //there is a child, get exit status
+                printf("CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
                 int status;
                 waitpid(pid, &status, 0); //get status of child pid         
                 printf("parent ppid : %d\n", getppid());
             } else {
-                //within child
-                exit(1); //
+                //parent process
+                printf("PARENT PROCESS\n");
+                printf("child pid : %d\n", getpid());
+                int status;
+                waitpid(pid, &status, 0); //get status of child pid         
+                printf("parent ppid : %d\n", getppid());
             }
             printf("i'm here?\n");
             printf("path : %s\n", sd->d_name);
-
         }
 
         // if file's last 4 bytes == ".csv" then execute if statement
