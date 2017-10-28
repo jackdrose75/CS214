@@ -15,16 +15,7 @@ and prints out if condition when .csv files are located
 */
 
 
-
-void childProcess(void){
-    printf("child process\n");
-}
-
-void parentProcess(void){
-    printf("parent process\n");
-}
-
-void searchDir(char *path){
+void dirSearch(char *path){
     //find files within directory
     DIR *dir;   // directory pointer
     struct dirent *sd;
@@ -43,7 +34,7 @@ void searchDir(char *path){
     // searches through current directory and prints files & subdirs inside
     while((sd=readdir(dir)) != NULL){
         int length = strlen(sd->d_name);
-        //get sub directories
+        //get sub directories excluding current (.) and prev directories (..)
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) {
             printf("\nDIRECTORY HERE: %s\n\n", sd->d_name); //need to fork here
             
@@ -53,20 +44,25 @@ void searchDir(char *path){
                 exit(1); //fork failed
             }
             else if (pid == 0){
-                //child
-                printf("child pid : %d\n", getpid());             
-            } else {
-                //parent
+                //there is a child, get exit status
+                printf("child pid : %d\n", getpid());
+                int status;
+                waitpid(pid, &status, 0); //get status of child pid         
                 printf("parent ppid : %d\n", getppid());
+            } else {
+                //within child
+                exit(1); //
             }
             printf("i'm here?\n");
-            searchDir(readdir(sd->d_name));
+            printf("path : %s\n", sd->d_name);
+
         }
 
         // if file's last 4 bytes == ".csv" then execute if statement
         if (((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
             printf("\n CSV IS FOUND: %s\n\n", sd->d_name); //fork here
             
+
             /*
             pid = fork();
             if (pid == -1){
@@ -84,6 +80,12 @@ void searchDir(char *path){
         }
     }
     closedir(dir);
+
+}
+
+//search for csv files
+void fileSearch(char *path){
+
 
 }
 
@@ -111,7 +113,7 @@ int main(int argc, char **argv)
     }
 
     //search directories
-    searchDir(".");
+    dirSearch(".");
 
     return 0;
 }
