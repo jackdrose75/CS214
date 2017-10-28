@@ -19,7 +19,7 @@ void dirSearch(char *path){
     //find files within directory
     DIR *dir;   // directory pointer
     struct dirent *sd;
-    dir = opendir("."); //points to current directory
+    dir = opendir(path); //points to current directory
     
     //for pid and forking
     pid_t pid; //assign fork to this value for child process
@@ -46,17 +46,16 @@ void dirSearch(char *path){
             else if (pid == 0){
                 //there is a child, get exit status
                 printf("CHILD PROCESS\n");
-                printf("child pid : %d\n", getpid());
-                int status;
-                waitpid(pid, &status, 0); //get status of child pid         
                 printf("parent ppid : %d\n", getppid());
+                printf("child pid : %d\n", getpid());     
             } else {
                 //parent process
                 printf("PARENT PROCESS\n");
                 printf("child pid : %d\n", getpid());
+                
+                //waits for child w/ specific pid to finish before continuing
                 int status;
-                waitpid(pid, &status, 0); //get status of child pid         
-                printf("parent ppid : %d\n", getppid());
+                waitpid(pid, &status, 0);
             }
             printf("i'm here?\n");
             printf("path : %s\n", sd->d_name);
