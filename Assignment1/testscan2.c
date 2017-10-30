@@ -13,23 +13,35 @@ Lists the files in current directory
 and prints out if condition when .csv files are located
 */
 
+// allocates memory for subpath's and also appends /
+char* pathcat(const char* str1,const char* str2){ 
+    char* subpath;  
+    result=(char*)malloc(strlen(str1)+strlen(str2)+ 3);
+
+    if(!result){
+        printf("failed to allocate memory\n");  
+        exit(1);  
+    }  
+	strcpy(result,str1);
+	strcat(result,"/");   
+	strcat(result,str2);  
+    return subpath;  
+}  
 
 // dirSearch takes in the given directory (dir), column being sorted (sortpath), and output file (outdir). returns the counter for children num.
 
-// dirSearch(char* dir, char* sortpath, char* outdir)
-int dirSearch(char *path){
+int dirSearch(char *path, char *colsort, char* outdir){
     //find files within directory
-    char *dirptr = (char*)malloc(100*sizeof(char));     // directory pointer
+    //char *dirptr = (char*)malloc(100*sizeof(char));     // directory pointer
     char *child = (char*)malloc(255*sizeof(char));	// child pointer
     char *childptr = child;
 
     struct dirent *sd;
-    strcpy(dirptr, path);
-    strcat(*dirptr, '/');
-    DIR* dir = opendir(dirptr);
+    //strcpy(dirptr, path);
+    //strcat(*dirptr, '/');
+    DIR* dir = opendir(path);
 
     int childnum = 0; // counts the children for output
-    //for pid and forking
     pid_t pid; //assign fork to this value for child process
 
     // null case: failed to open directory
@@ -41,7 +53,11 @@ int dirSearch(char *path){
 
     // searches through current directory and prints files & subdirs inside
     while((sd=readdir(dir)) != NULL){
-        int length = strlen(sd->d_name); 
+	char* subpath;
+	int length = strlen(sd->d_name); 
+	subpath = pathcat(path, sd->d_name);
+	struct stat s;
+	stat(subpath, &st);
 	       
 	//get sub directories excluding current (.) and prev directories (..)
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) { //dir_item->d_type ==4 subdirectories
@@ -57,10 +73,9 @@ int dirSearch(char *path){
                 // parent process
                 printf("PARENT PROCESS\n");
                 printf("child pid : %d\n", getpid());
-                dirSearch(dirptr); // dirSearch(dir, sortpath, outdir);
+                dirSearch(subpath, colsort, outdir); ;
 		exit(0); // waits for child w/ specific pid to finish before continuing
-            }else{ // if pid = 0 child
-		// there is a child
+            }else{ // if pid = 0 then child
 		childnum++;
                 printf("CHILD PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
@@ -92,9 +107,9 @@ int dirSearch(char *path){
             printf("i'm here?\n");
             printf("path : %s\n", sd->d_name);
         }
-	strcpy(dirptr, path);
-	strcat(dirptr, '/');
-	sd=readdir(dir);
+	//strcpy(dirptr, path);
+	//strcat(dirptr, '/');
+	//sd=readdir(subpath);
     }
     closedir(dir);
     return childnum;
@@ -131,7 +146,7 @@ int main(int argc, char **argv)
     }
 
     //search directories
-    dirSearch(".");
+    dirSearch(".", sortType, outputDir);
 
     return 0;
 }
