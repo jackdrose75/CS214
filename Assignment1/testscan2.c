@@ -97,13 +97,12 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
                 dirSearch(subpath); // , colsort, outdir
 		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 then child
-		//childnum++;
                 printf("Parent PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
             }
-            printf("i'm here?\n");
-            printf("path : %s\n", sd->d_name);
+            printf("i'm here SUBDIR\n");
+            printf("path SUBDIR : %s\n", sd->d_name);
         }
 
         // if file's last 4 bytes == ".csv" then execute if statement
@@ -112,23 +111,25 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
             pid = fork();
            if (!pid){
                 // parent process
-                printf("CHILD PROCESS\n");
+                printf("CSV CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
                 //sort_csv(path, sd->d_name, sortpath, outdir);
 		//childnum++;
 		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 child
 		// there is a child
-                printf("PARENT PROCESS\n");
+                printf("CSV PARENT PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
             }
-            printf("i'm here?\n");
-            printf("path : %s\n", sd->d_name);
+            printf("i'm here CSV\n");
+            printf("path CSV: %s\n", sd->d_name);
         }
     }
     closedir(dir);
+	printf("decrementing pc\n");
     wait(NULL);
+	pc--;
 }
 
 //search for csv files
