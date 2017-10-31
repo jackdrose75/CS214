@@ -30,8 +30,8 @@ void pcounter(char* path){ // , char* colsort
 	char* subpath;
 	int length = strlen(sd->d_name); 
 	subpath = pathcat(path, sd->d_name);
-	struct stat s;
-	stat(subpath, &s);
+	//struct stat s;
+	//stat(subpath, &s);
        
         if(((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") !=0) && (strcmp(sd->d_name, "..") !=0)){
             pc++;
@@ -45,15 +45,15 @@ void pcounter(char* path){ // , char* colsort
 // allocates memory for subpath's and also appends /
 char* pathcat(const char* str1,const char* str2){ 
     char* subpath;  
-    result=(char*)malloc(strlen(str1)+strlen(str2)+ 3);
+    subpath=(char*)malloc(strlen(str1)+strlen(str2)+ 3);
 
-    if(!result){
+    if(!subpath){
         printf("failed to allocate memory\n");  
         exit(1);  
     }  
-	strcpy(result,str1);
-	strcat(result,"/");   
-	strcat(result,str2);  
+	strcpy(subpath,str1);
+	strcat(subpath,"/");   
+	strcat(subpath,str2);  
     return subpath;  
 } 
 
@@ -77,8 +77,8 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
 	char* subpath;
 	int length = strlen(sd->d_name); 
 	subpath = pathcat(path, sd->d_name);
-	struct stat s;
-	stat(subpath, &s);
+	//struct stat s;
+	//stat(subpath, &s);
 	       
 	//get sub directories excluding current (.) and prev directories (..)
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) { //dir_item->d_type ==4 subdirectories
