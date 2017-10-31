@@ -13,6 +13,35 @@ Lists the files in current directory
 and prints out if condition when .csv files are located
 */
 
+int cc = 0; 
+
+void childcounter(char* path, char* colsort){
+    DIR *dir;
+    dir = opendir(path);
+    struct dirent *sd;
+    
+    if(dir == NULL) 
+    {
+        printf("Error: Directory N/A");
+        return 0;
+    }
+    
+    while (sd = readdir(dir)){
+	char* subpath;
+	int length = strlen(sd->d_name); 
+	subpath = pathcat(path, sd->d_name);
+	struct stat s;
+	stat(subpath, &s);
+       
+        if(((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") !=0) && (strcmp(sd->d_name, "..") !=0)){
+            cc++;
+            childcounter(subpath, colsort);
+        }else if(((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
+            cc++;
+	}
+    }
+}
+
 // allocates memory for subpath's and also appends /
 char* pathcat(const char* str1,const char* str2){ 
     char* subpath;  
@@ -26,26 +55,21 @@ char* pathcat(const char* str1,const char* str2){
 	strcat(result,"/");   
 	strcat(result,str2);  
     return subpath;  
-}  
+} 
 
-// dirSearch takes in the given directory (dir), column being sorted (sortpath), and output file (outdir). returns the counter for children num.
-
-int dirSearch(char *path, char *colsort, char* outdir){
-    //find files within directory
-    //char *dirptr = (char*)malloc(100*sizeof(char));     // directory pointer
+// dirSearch takes in the given directory (dir), column being sorted (sortpath), and output file (outdir). 
+void dirSearch(char *path, char *colsort, char* outdir){
+    DIR* dir = opendir(path);
+    struct dirent* sd;
+	
     char *child = (char*)malloc(255*sizeof(char));	// child pointer
     char *childptr = child;
 
-    struct dirent *sd;
-    //strcpy(dirptr, path);
-    //strcat(*dirptr, '/');
-    DIR* dir = opendir(path);
-
-    int childnum = 0; // counts the children for output
+    //int childnum = 0; // counts the children for output
     pid_t pid; //assign fork to this value for child process
 
     // null case: failed to open directory
-    if(dirptr == NULL) 
+    if(dir == NULL) 
     {
         printf("Error: Directory N/A");
         return 0;
@@ -57,7 +81,7 @@ int dirSearch(char *path, char *colsort, char* outdir){
 	int length = strlen(sd->d_name); 
 	subpath = pathcat(path, sd->d_name);
 	struct stat s;
-	stat(subpath, &st);
+	stat(subpath, &s);
 	       
 	//get sub directories excluding current (.) and prev directories (..)
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) { //dir_item->d_type ==4 subdirectories
@@ -76,7 +100,7 @@ int dirSearch(char *path, char *colsort, char* outdir){
                 dirSearch(subpath, colsort, outdir); ;
 		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 then child
-		childnum++;
+		//childnum++;
                 printf("CHILD PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
@@ -93,25 +117,22 @@ int dirSearch(char *path, char *colsort, char* outdir){
                 // parent process
                 printf("PARENT PROCESS\n");
                 printf("child pid : %d\n", getpid());
-                //sort_csv(dirptr, sd->d_name, sortpath, outdir);
-		childnum++;
+                //sort_csv(path, sd->d_name, sortpath, outdir);
+		//childnum++;
 		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 child
 		// there is a child
                 printf("CHILD PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
-		childnum++;
+		//childnum++;
 		*(childptr++)=pid;
             }
             printf("i'm here?\n");
             printf("path : %s\n", sd->d_name);
         }
-	//strcpy(dirptr, path);
-	//strcat(dirptr, '/');
-	//sd=readdir(subpath);
     }
-    closedir(dir);
+    wait(NULL);
     return childnum;
 }
 
@@ -119,10 +140,8 @@ int dirSearch(char *path, char *colsort, char* outdir){
 //search for csv files
 void fileSearch(char *path){
 
-
 }
 
-// convert main function to void dirscanner(char *dir);
 int main(int argc, char **argv)
 {
     //read stdin parameters
