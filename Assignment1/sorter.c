@@ -1,8 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include <stdbool.h>
-#include <ctype.h>
 #include "sorter.h"
 
 
@@ -68,6 +63,7 @@ char *getCat(char *line, int catIndex){
     return "\0";
 }
 
+
 char *buildString(char *start, char *end){
 
     int strLen = end - start;
@@ -77,6 +73,27 @@ char *buildString(char *start, char *end){
     strBuffer[strLen+1] = '\0';
     return strBuffer;
 }
+
+//check if num
+//returns 1 if number, otherwise 0
+int isNum(char *str){
+    int dotCount = 0;
+    while(*str) {
+        if(!isdigit(*str)){
+            if (*str == '.'){
+                dotCount++;
+                if (dotCount > 1){
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        }
+        str++;
+    }
+    return 1;
+}
+
 
 
 int main(int argc, char **argv){
@@ -142,12 +159,11 @@ int main(int argc, char **argv){
 
         //parse string for category field_data (i.e. director_name => James Cameron)
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
+        
         //test ifdigit
-/*        if(isdigit(*tmp)){
-            printf("PRINTING DIGITS\n");
-            int _tmp = atoi(tmp);
-        }
-*/
+        printf("isNUM %s : %d \n", tmp, isNum(tmp));
+
+
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
         // printf("tmpList -> field_data: %s\n", tmpList->field_data);        

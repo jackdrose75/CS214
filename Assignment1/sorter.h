@@ -1,6 +1,12 @@
 #ifndef SORTER_
 #define SORTER_
 
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include <stdbool.h>
+#include <ctype.h>
+
 //Defines our structs to store data about each row
 /*typedef struct{
     typedef enum {POINTER, INT} DataType;
