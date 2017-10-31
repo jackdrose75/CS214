@@ -13,9 +13,9 @@ Lists the files in current directory
 and prints out if condition when .csv files are located
 */
 
-int cc = 0; 
+int pc = 0; 
 
-void childcounter(char* path, char* colsort){
+void pcounter(char* path, char* colsort){
     DIR *dir;
     dir = opendir(path);
     struct dirent *sd;
@@ -34,10 +34,10 @@ void childcounter(char* path, char* colsort){
 	stat(subpath, &s);
        
         if(((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") !=0) && (strcmp(sd->d_name, "..") !=0)){
-            cc++;
+            pc++;
             childcounter(subpath, colsort);
         }else if(((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
-            cc++;
+            pc++;
 	}
     }
 }
@@ -132,10 +132,9 @@ void dirSearch(char *path, char *colsort, char* outdir){
             printf("path : %s\n", sd->d_name);
         }
     }
+    closedir(dir);
     wait(NULL);
-    return childnum;
 }
-
 
 //search for csv files
 void fileSearch(char *path){
@@ -144,12 +143,21 @@ void fileSearch(char *path){
 
 int main(int argc, char **argv)
 {
+	//recursion forking variables
+	char* path, colsort, outdir;
+	
+	//checks for -c flag to be inputted
+	if(strcmp(argv[1], "-c")){
+		printf("Missing -c first flag, please input again\n");
+		exit(1);
+	}
+	
     //read stdin parameters
-    if (argc == 3) {
+    if (argc == 3) { // <prgname> -c <input directory>
         //search current directory
         printf("Sorting by %s and storing in current directory.\n", argv[2]);
-        char *sortType = argv[1]; //get argument to sort by, -c for column
-        char *sortTopic = argv[2]; //get topic i.e. 'movies'
+        //char *sortType = argv[1]; //get argument to sort by, -c for column
+        path = argv[1]; //input directory
     }
     else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
         //sort and store in new directory
@@ -165,7 +173,8 @@ int main(int argc, char **argv)
     }
 
     //search directories
-    dirSearch(".", sortType, outputDir);
-
+    dirSearch(inputDir, sortType, outputDir);
+    pcounter(path, colsort);
+    printf("Total # processes: %d\n", pc);
     return 0;
 }
