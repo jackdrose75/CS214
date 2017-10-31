@@ -15,7 +15,7 @@ and prints out if condition when .csv files are located
 
 int pc = 0; 
 
-void pcounter(char* path, char* colsort){
+void pcounter(char* path){ // , char* colsort
     DIR *dir;
     dir = opendir(path);
     struct dirent *sd;
@@ -35,7 +35,7 @@ void pcounter(char* path, char* colsort){
        
         if(((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") !=0) && (strcmp(sd->d_name, "..") !=0)){
             pc++;
-            childcounter(subpath, colsort);
+            childcounter(subpath); // , colsort
         }else if(((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
             pc++;
 	}
@@ -58,12 +58,9 @@ char* pathcat(const char* str1,const char* str2){
 } 
 
 // dirSearch takes in the given directory (dir), column being sorted (sortpath), and output file (outdir). 
-void dirSearch(char *path, char *colsort, char* outdir){
+void dirSearch(char *path){ // , char *colsort, char* outdir
     DIR* dir = opendir(path);
     struct dirent* sd;
-	
-    char *child = (char*)malloc(255*sizeof(char));	// child pointer
-    char *childptr = child;
 
     //int childnum = 0; // counts the children for output
     pid_t pid; //assign fork to this value for child process
@@ -94,14 +91,14 @@ void dirSearch(char *path, char *colsort, char* outdir){
             }
 
            if (!pid){
-                // parent process
-                printf("PARENT PROCESS\n");
+                // child process
+                printf("CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
-                dirSearch(subpath, colsort, outdir); ;
+                dirSearch(subpath); // , colsort, outdir
 		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 then child
 		//childnum++;
-                printf("CHILD PROCESS\n");
+                printf("Parent PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
             }
@@ -115,18 +112,16 @@ void dirSearch(char *path, char *colsort, char* outdir){
             pid = fork();
            if (!pid){
                 // parent process
-                printf("PARENT PROCESS\n");
+                printf("CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
                 //sort_csv(path, sd->d_name, sortpath, outdir);
 		//childnum++;
 		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 child
 		// there is a child
-                printf("CHILD PROCESS\n");
+                printf("PARENT PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
-		//childnum++;
-		*(childptr++)=pid;
             }
             printf("i'm here?\n");
             printf("path : %s\n", sd->d_name);
@@ -143,6 +138,7 @@ void fileSearch(char *path){
 
 int main(int argc, char **argv)
 {
+/*
 	//recursion forking variables
 	char* path, colsort, outdir;
 	
@@ -171,10 +167,10 @@ int main(int argc, char **argv)
         printf("Invalid parameters");
         return 0;
     }
-
+*/
     //search directories
-    dirSearch(inputDir, sortType, outputDir);
-    pcounter(path, colsort);
+    dirSearch(".");
+    pcounter(".");
     printf("Total # processes: %d\n", pc);
     return 0;
 }
