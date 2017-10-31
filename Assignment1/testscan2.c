@@ -15,33 +15,6 @@ and prints out if condition when .csv files are located
 
 int pc = 0; 
 
-void pcounter(char* path){ // , char* colsort
-    DIR *dir;
-    dir = opendir(path);
-    struct dirent *sd;
-    
-    if(dir == NULL) 
-    {
-        printf("Error: Directory N/A");
-        return 0;
-    }
-    
-    while (sd = readdir(dir)){
-	char* subpath;
-	int length = strlen(sd->d_name); 
-	subpath = pathcat(path, sd->d_name);
-	//struct stat s;
-	//stat(subpath, &s);
-       
-        if(((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") !=0) && (strcmp(sd->d_name, "..") !=0)){
-            pc++;
-            childcounter(subpath); // , colsort
-        }else if(((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
-            pc++;
-	}
-    }
-}
-
 // allocates memory for subpath's and also appends /
 char* pathcat(const char* str1,const char* str2){ 
     char* subpath;  
@@ -57,6 +30,33 @@ char* pathcat(const char* str1,const char* str2){
     return subpath;  
 } 
 
+void pcounter(char* path){ // , char* colsort
+    DIR *dir;
+    dir = opendir(path);
+    struct dirent *sd;
+    
+    if(dir == NULL) 
+    {
+        printf("Error: Directory N/A");
+        exit(1);
+    }
+    
+    while (sd = readdir(dir)){
+	char* subpath;
+	int length = strlen(sd->d_name); 
+	subpath = pathcat(path, sd->d_name);
+	//struct stat s;
+	//stat(subpath, &s);
+       
+        if(((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") !=0) && (strcmp(sd->d_name, "..") !=0)){
+            pc++;
+            pcounter(subpath); // , colsort
+        }else if(((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
+            pc++;
+	}
+    }
+}
+
 // dirSearch takes in the given directory (dir), column being sorted (sortpath), and output file (outdir). 
 void dirSearch(char *path){ // , char *colsort, char* outdir
     DIR* dir = opendir(path);
@@ -69,7 +69,7 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
     if(dir == NULL) 
     {
         printf("Error: Directory N/A");
-        return 0;
+        exit(1);
     }
 
     // searches through current directory and prints files & subdirs inside
