@@ -2,6 +2,39 @@
 
 // Mergesort functions to sort structs
 
+//check if num
+//returns 1 if number
+//returns 0 if not number
+int isNum(char *str){
+    int dotCount = 0;
+    while(*str) {
+        if(!isdigit(*str)){
+            if (*str == '.'){
+                dotCount++;
+                if (dotCount > 1){
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        }
+        str++;
+    }
+    return 1;
+}
+
+//return 1 if num1 greater than num2
+//return 0 if num1 == num2
+//return -1 if num1 < num2
+int numcmp(float num1, float num2){
+    if (num1 > num2) {
+        return 1;
+    } else if (num1 == num2) {
+        return 0;
+    } else {
+        return -1; //num1 < num2
+    }
+}
 
 void merge(Record** a, int low, int mid, int high){
 
@@ -46,16 +79,40 @@ void merge(Record** a, int low, int mid, int high){
     j = 0; // starting index of second subarray
     k = low; // starting index of merged subarray
     
-    while(i < topL && j < bottomL){
+    while(i < topL && j < bottomL) {
         /*printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
         printf("bottom[%d]->field_data : %s\n", i, bottom[j]->field_data);*/
-        if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
-            a[k] = top[i++];
-            //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;
+
+        //compare nums if num
+        // printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
+        // printf("bottom[%d]->field_data : %s\n", j, bottom[j]->field_data);
+        // printf("isNum(top[%d]->field_data) : %d : %s\n", i, isNum(top[i]->field_data), top[i]->field_data);
+        // printf("isNum(bottom[%d]->field_data) : %d : %s\n", j, isNum(bottom[j]->field_data), bottom[j]->field_data);
+        
+        if(isNum(top[i]->field_data) && isNum(bottom[j]->field_data)){
+            float num1 = atof(top[i]->field_data); //save as floats
+            float num2 = atof(bottom[j]->field_data);
+            
+            // printf("numcp(%f, %f) : %d\n", num1, num2, numcmp(num1,num2));
+            
+            if(numcmp(num1, num2) < 0){
+                a[k] = top[i++];
+            }
+            else {
+                a[k] = bottom[j++];
+            }
         }
-        else{
-            a[k] = bottom[j++];
-            //strcpy(a[k++] -> field_data, bottom[j++] -> field_data);
+
+        //compare strings if string
+        else { 
+            if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
+                a[k] = top[i++];
+                //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;
+            }
+            else {
+                a[k] = bottom[j++];
+                //strcpy(a[k++] -> field_data, bottom[j++] -> field_data);
+            }
         }
         k++;
     }
