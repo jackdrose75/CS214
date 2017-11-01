@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <string.h> // need strncmp/strlen for finding ".csv" files
-#include <dirent.h> // allows for readdir(), opendir()
+#include "sorter.h"
 
 /* To test:
 cd Desktop

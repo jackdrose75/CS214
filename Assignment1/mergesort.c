@@ -45,33 +45,15 @@ void merge(Record** a, int low, int mid, int high){
     Record** top = (Record **)malloc(sizeof(Record **)*topL);
     Record** bottom = (Record **)malloc(sizeof(Record **)*bottomL);
 
-    // printf("high : %d\n", high);
-    // printf("mid : %d\n", mid);
-    // printf("low : %d\n", low);
-
-    // printf("++++++");
-    // printf("BEGIN\n");
-    // int blah;
-    // for(blah = 0; blah < high; blah++) {
-    //     printf("%s ", a[blah] -> field_data);
-    // }
-    // printf("\n");
-    // printf("++++++");
-
     for(i = 0; i < topL; i++){
-        //top[i] = malloc(sizeof(a[low+1]));
         top[i] = malloc(sizeof(Record));
         top[i] = a[low + i];
-        // printf("a[low %d] : %s\n", low,  a[low]->field_data);
-        //printf("top updated w/ a: %s\n", top[i]->field_data);
-        // strcpy(top[i], a[low+i]);
+
     }
     for(j = 0; j < bottomL; j++){
-        //bottom[i] = malloc(sizeof(a[mid+i+1])); 
         bottom[j] = malloc(sizeof(Record));
         bottom[j] = a[mid+1+j];
-        // printf("bottom updateed w/ a: %s\n", bottom[j]->field_data);
-        // strcpy(bottom[i], a[mid+i+1]);
+
     }
     
     // merge temps back into records
@@ -80,15 +62,7 @@ void merge(Record** a, int low, int mid, int high){
     k = low; // starting index of merged subarray
     
     while(i < topL && j < bottomL) {
-        /*printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
-        printf("bottom[%d]->field_data : %s\n", i, bottom[j]->field_data);*/
-
         //compare nums if num
-        // printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
-        // printf("bottom[%d]->field_data : %s\n", j, bottom[j]->field_data);
-        // printf("isNum(top[%d]->field_data) : %d : %s\n", i, isNum(top[i]->field_data), top[i]->field_data);
-        // printf("isNum(bottom[%d]->field_data) : %d : %s\n", j, isNum(bottom[j]->field_data), bottom[j]->field_data);
-
         if(isNum(top[i]->field_data) && isNum(bottom[j]->field_data)){
             float num1 = atof(top[i]->field_data); //save as floats
             float num2 = atof(bottom[j]->field_data);
@@ -109,9 +83,6 @@ void merge(Record** a, int low, int mid, int high){
 
         //compare strings if string
         else { 
-            // printf(">>>>>>I'm comparing strings when i'm not supposed to\n");
-            // printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
-            // printf("bottom[%d]->field_data : %s\n\n", j, bottom[j]->field_data);
 
             if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
                 a[k] = top[i++];
@@ -137,16 +108,6 @@ void merge(Record** a, int low, int mid, int high){
         j++;
         k++;
     }
-
-
-/*
-    printf("++++++");
-    for(i = 0; i < k; i++) {
-        printf("%s ", a[i] -> field_data);
-    }
-    printf("\n");
-    printf("++++++");
-*/
 
     free(top);
     free(bottom);

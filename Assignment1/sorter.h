@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <dirent.h> // allows for readdir(), opendir()
 
 typedef struct{
     char *field_data;
@@ -28,5 +30,10 @@ char *getCat(char *line, int catIndex);
 char *buildString(char *begin, char *end);
 // Checks if item is a number
 int isNum(char *str);
+
+//
+void dirSearch(char *path);
+//
+void fileSearch(char *path);
 
 #endif
