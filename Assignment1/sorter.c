@@ -73,9 +73,7 @@ char *buildString(char *start, char *end){
     return strBuffer;
 }
 
-
-int main(int argc, char **argv){
-
+void sorter(int argc, char **argv){
     const int MAXSIZE = 1024;
 
     //stores the input from the user as a string variable
@@ -101,7 +99,7 @@ int main(int argc, char **argv){
     //check if valid input
     if (cat_index == -1){
         printf("%s is not a valid input.\n", sortTopic);
-        return 0;
+        exit(0);
     }
 
     //initialize array of structs
@@ -188,6 +186,13 @@ int main(int argc, char **argv){
 
     //printf("Here\n");
     free(recordList);
+
+}
+
+
+int main(int argc, char **argv){
+
+    sorter(argc, argv);
     return 0;
 
 }
