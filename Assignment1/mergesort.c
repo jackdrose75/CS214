@@ -88,23 +88,31 @@ void merge(Record** a, int low, int mid, int high){
         // printf("bottom[%d]->field_data : %s\n", j, bottom[j]->field_data);
         // printf("isNum(top[%d]->field_data) : %d : %s\n", i, isNum(top[i]->field_data), top[i]->field_data);
         // printf("isNum(bottom[%d]->field_data) : %d : %s\n", j, isNum(bottom[j]->field_data), bottom[j]->field_data);
-        
+
         if(isNum(top[i]->field_data) && isNum(bottom[j]->field_data)){
             float num1 = atof(top[i]->field_data); //save as floats
             float num2 = atof(bottom[j]->field_data);
             
-            // printf("numcp(%f, %f) : %d\n", num1, num2, numcmp(num1,num2));
-            
+            // printf("numcmp(%f, %f) : %d\n", num1, num2, numcmp(num1,num2));
+            // printf("num1 : %f :: num2 : %f\n", num1, num2);
             if(numcmp(num1, num2) < 0){
-                a[k] = top[i++];
+                // printf("num1 <= num2 : %f <= %f\n\n", num1, num2);
+                a[k] = top[i];
+                i++;
             }
             else {
-                a[k] = bottom[j++];
+                // printf("num1 > num2 : %f > %f\n\n", num1, num2);
+                a[k] = bottom[j];
+                j++;
             }
         }
 
         //compare strings if string
         else { 
+            // printf(">>>>>>I'm comparing strings when i'm not supposed to\n");
+            // printf("top[%d]->field_data : %s\n", i, top[i]->field_data);
+            // printf("bottom[%d]->field_data : %s\n\n", j, bottom[j]->field_data);
+
             if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
                 a[k] = top[i++];
                 //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;

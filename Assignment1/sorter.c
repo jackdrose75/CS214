@@ -26,7 +26,7 @@ char *getCat(char *line, int catIndex){
                         //create and return substring
                         //char *str = buildString(pStart, pEnd);
                         //printf("%s\n", str);
-                        return buildString(pStart, pEnd);;
+                        return buildString(pStart, pEnd);
                     } 
                     
                     //if strIndex != catindex, move pStart to pEnd
@@ -53,13 +53,25 @@ char *getCat(char *line, int catIndex){
                     pEnd = pEnd+2;
                     pStart = pEnd;
                 }
-
+            case '\r':
+                if(*(pEnd++)){
+                    if(*pEnd == '\n'){
+                        pEnd--;
+                        return buildString(pStart, pEnd);
+                    } else {
+                        pEnd++;
+                        break;
+                    }
+                }
+                pEnd--;
+                return buildString(pStart, pEnd);
+                
             default:
                 pEnd++;
         }
     }
 
-    return "\0";
+    return '\0';
 }
 
 
@@ -69,7 +81,9 @@ char *buildString(char *start, char *end){
     char *strBuffer = (char *)malloc((strLen+1)*sizeof(char *));
     //copies chars from one string to another for strLen
     memcpy(strBuffer, start, strLen);
-    strBuffer[strLen+1] = '\0';
+    strBuffer[strLen] = '\0';
+    //printf("strBuffer: %s\n", strBuffer);
+    //printf("strBuffer[strLen]: %s\n", strBuffer[strLen]);
     return strBuffer;
 }
 
@@ -138,10 +152,11 @@ void sorter(int argc, char **argv){
         
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
-        // printf("tmpList -> field_data: %s\n", tmpList->field_data);        
+        // printf("tmpList -> field_data: %s\n", tmpList->field_data);
+
         //save original string row to tmpList.original_row
         tmpList -> original_row = _row;
-        //printf("tmpList -> original_row : %s\n", tmpList->original_row);
+        // printf("tmpList -> original_row : %s\n", tmpList->original_row);
 
         //add tmpList struct to array of structs recordList[index] at index
         recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
