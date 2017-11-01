@@ -7,14 +7,20 @@
 #include <dirent.h> // allows for readdir(), opendir()
 
 int pc = 0; 
+pid_t pidArray[256];
 pid_t p;
 
-// allocates memory for subpath's and also appends /
+void addArray(pid_t p){
+	pidArray[pc] = p;
+	pc++;
+}
+
+// allocates memory for subpaths and also appends /
 char* pathcat(const char* str1,const char* str2){ 
     char* subpath;  
     subpath=(char*)malloc(strlen(str1)+strlen(str2)+ 3);
 
-    if(!subpath){
+    if(subpath == NULL){
         printf("failed to allocate memory\n");  
         exit(1);  
     }  
@@ -35,7 +41,7 @@ void pcounter(char* path){ // , char* colsort
         exit(1);
     }
     
-    while (sd = readdir(dir)){
+    while ((sd = readdir(dir)) != NULL){
 	char* subpath;
 	int length = strlen(sd->d_name); 
 	subpath = pathcat(path, sd->d_name);
@@ -55,14 +61,14 @@ void pcounter(char* path){ // , char* colsort
 void dirSearch(char *path){ // , char *colsort, char* outdir
     DIR* dir = opendir(path);
     struct dirent* sd;
-
-    //int childnum = 0; // counts the children for output
     pid_t pid; //assign fork to this value for child process
+    pid_t ptemp; //for holding child pid vals to insert in pidArray
 
     // null case: failed to open directory
     if(dir == NULL) 
     {
         printf("Error: Directory N/A");
+	fflush(stdout);
         exit(1);
     }
 
@@ -78,55 +84,59 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) 			{ //dir_item->d_type ==4 subdirectories
             printf("\nDIRECTORY HERE: %s\n\n", sd->d_name); //need to fork here
             pid = fork();
-		
             if (pid == -1){
                 printf("fork failed\n");
                 exit(1); //fork failed
             }
 
-           if (pid == 0){
+           if (!pid){
                 // child process
-		//pc++;
-                printf("CHILD PROCESS\n");
-                printf("child pid : %d\n", getpid());
-		dir = opendir(path);
+		ptemp = getpid();
+                printf("DIR CHILD PROCESS\n");
+                printf("parent ppid : %d for %s \n", getppid(), sd->d_name);
+                printf("child pid : %d for %s \n\n", getpid(), sd->d_name);
+		addArray(ptemp);
+		// dir = opendir(path);
                 dirSearch(subpath); // , colsort, outdir
-		exit(1); // waits for child w/ specific pid to finish before continuing
+		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 then child
-		//pc++;
-                printf("Parent PROCESS\n");
-                printf("parent ppid : %d\n", getppid());
-                printf("child pid : %d\n", getpid());
-		//fflush(stdout); 
+                printf("DIR PARENT PROCESS\n");
+                printf("parent ppid : %d for %s \n", getppid(), sd->d_name);
+                printf("child pid : %d for %s \n\n", getpid(), sd->d_name);
+		fflush(stdout); 
             }
             printf("i'm here SUBDIR\n");
-            printf("path SUBDIR : %s\n", sd->d_name);
+            printf("PATH SUBDIR : %s\n", sd->d_name);
         }
 
         // if file's last 4 bytes == ".csv" then execute if statement
         if (((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
             printf("\n CSV IS FOUND: %s\n\n", sd->d_name); //fork here
             pid = fork();
-           if (pid == 0){
+
+           if (!pid){
                 // child process
+		ptemp = getpid();
                 printf("CSV CHILD PROCESS\n");
-                printf("child pid : %d\n", getpid());
+                printf("parent ppid : %d for %s \n", getppid(), sd->d_name);
+                printf("child pid : %d for %s \n\n", getpid(), sd->d_name);
+		addArray(ptemp);
                 //sort_csv(path, sd->d_name, sortpath, outdir);
-		//childnum++;
-		exit(1); // waits for child w/ specific pid to finish before continuing
+		exit(0); // waits for child w/ specific pid to finish before continuing
             }else{
                 printf("CSV PARENT PROCESS\n");
-                printf("parent ppid : %d\n", getppid());
-                printf("child pid : %d\n", getpid());
-		//fflush(stdout); 
+                printf("parent ppid : %d for %s \n", getppid(), sd->d_name);
+                printf("child pid : %d for %s \n\n", getpid(), sd->d_name);
+		fflush(stdout); 
             }
             printf("i'm here CSV\n");
             printf("path CSV: %s\n", sd->d_name);
         }
     }
-
     pid_t waitid;
-    while ((waitid = wait(NULL)) > 0){        
+	printf("wait here:::");
+    while ((waitid = wait(NULL)) > 0){  
+	printf("---");      
         // exit when -1 all children done;
     }	
 }
@@ -168,12 +178,12 @@ int main(int argc, char **argv)
         return 0;
     }
 */
-	p = getpid();
+	//p = getpid();
 
     //search directories
-    dirSearch(".");
-
-    pcounter(".");
-    printf("Total # processes: %d\n", pc);
-    return 0;
+	dirSearch(".");
+	pcounter(".");
+	printf("Total # processes: %d\n", pc+1);
+	// children counter + 1 original process
+	return 0;
 }
