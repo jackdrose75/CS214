@@ -1,12 +1,4 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include <ctype.h>
 #include "sorter.h"
-
-#define bool int
-#define true 1
-#define false 0
 
 // Main file to parse and pass data
 
@@ -16,42 +8,31 @@
 //finds out length of substring
 //finds length of substring by substracting pEnd and pStart
 //malloc space for new char array and copy characters to it 
-void *getCat(char *line, int catIndex){
+char *getCat(char *line, int catIndex){
 
     char *pStart = line; //keeps track of beginning of substring
     char *pEnd = line; //continues until finds substring index
 
     int strIndex = 0;
-    int strLen = 0;
-    bool inQuote = false;
 
-    // flags to check if substring is float or int
-    bool isInt = false;
-    int numDots = 0;
-    bool isFloat = false;
+    bool inQuote = false;
 
     while(*pEnd){
         switch(*pEnd){
             case ',':
                 if(inQuote == false){
-                    //build string
+                    //printf("pStart : %s\n", pStart);
                     if(strIndex == catIndex){
                         //create and return substring
-                         //char *str = buildString(pStart, pEnd);
-                         //printf("%s\n", str);
-                        return buildString(pStart, pEnd, isInt, isFloat);;
+                        //char *str = buildString(pStart, pEnd);
+                        //printf("%s\n", str);
+                        return buildString(pStart, pEnd);
                     } 
                     
                     //if strIndex != catindex, move pStart to pEnd
                     pEnd++;
                     pStart = pEnd;
                     strIndex++; //update strIndex
-
-                    //reset flags
-                    isInt = false;
-                    numDots = 0;
-                    isFloat = false;
-
                 } else {
                     pEnd++;
                 }
@@ -63,83 +44,50 @@ void *getCat(char *line, int catIndex){
                     inQuote = !inQuote;
                     pEnd++;
                     pStart = pEnd;
-                    //reset flags
-                    isInt = false;
-                    numDots = 0;
-                    isFloat = false;
-
                 } else {
-                    //build string
                     inQuote = !inQuote;
                     if (strIndex++ == catIndex){
                         pEnd--;
-                        return buildString(pStart, pEnd, isInt, isFloat);
+                        return buildString(pStart, pEnd);
                     }
                     pEnd = pEnd+2;
                     pStart = pEnd;
-                    //reset flags
-                    isInt = false;
-                    numDots = 0;
-                    isFloat = false;
                 }
-
-            default:
-                //check if character is not a digit
-                if(!isdigit(*pEnd)){
-                    //check if float
-                    if(*pEnd == '.'){
-                        if (isInt && (numDots == 0)){
-                            //is a float so far
-                            isFloat = true;
-                            isInt = false;
-                        } else if (isInt && (numDots > 0)){
-                            //is a char
-                            isFloat = false;
-                            isInt = false;
-                        }
-                        numDots++;
+            case '\r':
+                if(*(pEnd++)){
+                    if(*pEnd == '\n'){
+                        pEnd--;
+                        return buildString(pStart, pEnd);
                     } else {
-                        isInt = false;
-                        isFloat = false;
+                        pEnd++;
+                        break;
                     }
-                } else if((pEnd-pStart) == 0){
-                    //start of char
-                    isInt = true;
                 }
-
+                pEnd--;
+                return buildString(pStart, pEnd);
+                
+            default:
                 pEnd++;
         }
     }
 
-    return "\0";
+    return '\0';
 }
 
-void *buildString(char *start, char *end, bool isInt, bool isFloat){
+
+char *buildString(char *start, char *end){
 
     int strLen = end - start;
-    void *buffer;
-    if(!isInt && !isFloat){
-        buffer = (char *)malloc((strLen+1)*sizeof(char *));
-    } else if (isInt){
-        buffer = (int *)malloc((strLen+1)*sizeof(int));
-    } else{
-        buffer = (float *)malloc((strLen+1)*sizeof(float));
-    }
-    
+    char *strBuffer = (char *)malloc((strLen+1)*sizeof(char *));
     //copies chars from one string to another for strLen
-    memcpy(buffer, start, strLen);
-    //if(!isInt && !isFloat){
-    //    buffer[strLen+1] = '\0';
-    //}
-
-    // if isAllInts:
-        // recordList[] -> type = 0
-    return buffer;
+    memcpy(strBuffer, start, strLen);
+    strBuffer[strLen] = '\0';
+    //printf("strBuffer: %s\n", strBuffer);
+    //printf("strBuffer[strLen]: %s\n", strBuffer[strLen]);
+    return strBuffer;
 }
 
-
-int main(int argc, char **argv){
-
+void sorter(int argc, char **argv){
     const int MAXSIZE = 1024;
 
     //stores the input from the user as a string variable
@@ -150,7 +98,7 @@ int main(int argc, char **argv){
     //match by index number of column
     char first_row[MAXSIZE];// = (char *)malloc(MAXSIZE);
     fgets(first_row, MAXSIZE, stdin); //get first row
-    char *_first_row = first_row; //tmp to keep track for strsep
+    char *_first_row = strdup(first_row); //tmp to keep track for strsep
 
     char *cat; //pulled category from strsep
     int cat_index = -1; //index where category is
@@ -165,7 +113,7 @@ int main(int argc, char **argv){
     //check if valid input
     if (cat_index == -1){
         printf("%s is not a valid input.\n", sortTopic);
-        return 0;
+        exit(0);
     }
 
     //initialize array of structs
@@ -174,9 +122,18 @@ int main(int argc, char **argv){
     //get input line by line from stdin
     int index = 0;
     char row[MAXSIZE];
+    //char *row;
 
     while(fgets(row, MAXSIZE, stdin) != NULL){
-
+/*
+        size_t ln = strlen(row)-1;
+        printf(">>>>>>>> : %c\n", row[ln]);
+        if(row[ln]=='\n'){
+            printf("THERE IS A NEWLINE\n");
+            row[ln] = '\0';
+        }
+*/
+        //strtok(row, "\n");
         char *_row = strdup(row);
 
         //temporary struct to hold parsed data
@@ -192,18 +149,14 @@ int main(int argc, char **argv){
 
         //parse string for category field_data (i.e. director_name => James Cameron)
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
-        //test ifdigit
-/*        if(isdigit(*tmp)){
-            printf("PRINTING DIGITS\n");
-            int _tmp = atoi(tmp);
-        }
-*/
+        
         //save category into tmpList.field_data
         tmpList -> field_data = tmp;
-        //printf("tmpList -> field_data: %s\n", tmpList->field_data);        
+        // printf("tmpList -> field_data: %s\n", tmpList->field_data);
+
         //save original string row to tmpList.original_row
         tmpList -> original_row = _row;
-        //printf("tmpList -> original_row : %s\n", tmpList->original_row);
+        // printf("tmpList -> original_row : %s\n", tmpList->original_row);
 
         //add tmpList struct to array of structs recordList[index] at index
         recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
@@ -216,21 +169,22 @@ int main(int argc, char **argv){
         index++;
     }
 
+    int i;
 
+/*
     printf("\n\n++++++");
     printf("BEFORE MERGESORT\n");
-    int i;
     for(i = 0; i < index; i++) {
         printf("%s\n", recordList[i] -> field_data);
     }
     printf("\n");
     printf("++++++");
-
+*/
     //merge sort recordLists by field_data
     // printf("\nindex-1: %d\n", index-1);
 
     merge_sort(recordList, 0, index-1);
-
+/*
     printf("\n\n++++++");
     printf("AFTER MERGESORT\n");
     for(i = 0; i < index; i++) {
@@ -238,10 +192,22 @@ int main(int argc, char **argv){
     }
     printf("\n");
     printf("++++++");
-
+*/
+    //output
+    printf("%s", first_row);
+    for(i = 0; i < index; i++) {
+        printf("%s", recordList[i] -> original_row);
+    }
 
     //printf("Here\n");
     free(recordList);
+
+}
+
+
+int main(int argc, char **argv){
+
+    sorter(argc, argv);
     return 0;
 
 }
