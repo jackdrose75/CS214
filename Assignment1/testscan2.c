@@ -199,5 +199,9 @@ int main(int argc, char **argv)
 
 	printf("\nTotal # processes: %d\n", pc+1);
 	// children counter + 1 original process
+
+    
+    
+
 	return 0;
 }
