@@ -1,15 +1,13 @@
-#include "sorter.h"
-
-/* To test:
-cd Desktop
-cd <desired directory>
-gcc -o <outfile> testscan.c
-./<outfile>
-Lists the files in current directory
-and prints out if condition when .csv files are located
-*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <string.h> // need strncmp/strlen for finding ".csv" files
+#include <dirent.h> // allows for readdir(), opendir()
 
 int pc = 0; 
+pid_t p;
 
 // allocates memory for subpath's and also appends /
 char* pathcat(const char* str1,const char* str2){ 
@@ -77,7 +75,7 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
 	//stat(subpath, &s);
 	       
 	//get sub directories excluding current (.) and prev directories (..)
-        if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) { //dir_item->d_type ==4 subdirectories
+        if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)) 			{ //dir_item->d_type ==4 subdirectories
             printf("\nDIRECTORY HERE: %s\n\n", sd->d_name); //need to fork here
             pid = fork();
 		
@@ -86,16 +84,20 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
                 exit(1); //fork failed
             }
 
-           if (!pid){
+           if (pid == 0){
                 // child process
+		//pc++;
                 printf("CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
-                dirSearch(subpath); // , colsort, outdir
-		exit(0); // waits for child w/ specific pid to finish before continuing
+		dir = opendir(path);
+                //dirSearch(subpath); // , colsort, outdir
+		exit(1); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 then child
+		//pc++;
                 printf("Parent PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
+		//fflush(stdout); 
             }
             printf("i'm here SUBDIR\n");
             printf("path SUBDIR : %s\n", sd->d_name);
@@ -105,27 +107,28 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
         if (((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
             printf("\n CSV IS FOUND: %s\n\n", sd->d_name); //fork here
             pid = fork();
-           if (!pid){
-                // parent process
+           if (pid == 0){
+                // child process
                 printf("CSV CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
                 //sort_csv(path, sd->d_name, sortpath, outdir);
 		//childnum++;
-		exit(0); // waits for child w/ specific pid to finish before continuing
-            }else{ // if pid = 0 child
-		// there is a child
+		exit(1); // waits for child w/ specific pid to finish before continuing
+            }else{
                 printf("CSV PARENT PROCESS\n");
                 printf("parent ppid : %d\n", getppid());
                 printf("child pid : %d\n", getpid());
+		//fflush(stdout); 
             }
             printf("i'm here CSV\n");
             printf("path CSV: %s\n", sd->d_name);
         }
     }
-    closedir(dir);
-	printf("decrementing pc\n");
-    wait(NULL);
-	pc--;
+
+    pid_t waitid;
+    while ((waitid = wait(NULL)) > 0){        
+        // exit when -1 all children done;
+    }	
 }
 
 //search for csv files
@@ -165,8 +168,11 @@ int main(int argc, char **argv)
         return 0;
     }
 */
+	p = getpid();
+
     //search directories
     dirSearch(".");
+
     pcounter(".");
     printf("Total # processes: %d\n", pc);
     return 0;
