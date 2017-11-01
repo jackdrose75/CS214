@@ -90,7 +90,7 @@ void dirSearch(char *path){ // , char *colsort, char* outdir
                 printf("CHILD PROCESS\n");
                 printf("child pid : %d\n", getpid());
 		dir = opendir(path);
-                //dirSearch(subpath); // , colsort, outdir
+                dirSearch(subpath); // , colsort, outdir
 		exit(1); // waits for child w/ specific pid to finish before continuing
             }else{ // if pid = 0 then child
 		//pc++;
