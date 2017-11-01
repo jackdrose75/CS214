@@ -8,6 +8,8 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <dirent.h> // allows for readdir(), opendir()
+#include <errno.h>
+
 
 typedef struct{
     char *field_data;
@@ -23,7 +25,7 @@ void merge(Record** a, int low, int mid, int high);
 void merge_sort(Record** a, int low, int high);
 
 // run sorter on csv
-void sorter(int argc, char **argv);
+void sorter(FILE *input, int argc, char **argv);
 // Parses string for delimiters and returns pointer to the string
 char *getCat(char *line, int catIndex);
 // Builds string if it detects a ""

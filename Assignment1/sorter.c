@@ -70,10 +70,8 @@ char *getCat(char *line, int catIndex){
                 pEnd++;
         }
     }
-
     return '\0';
 }
-
 
 char *buildString(char *start, char *end){
 
@@ -82,12 +80,21 @@ char *buildString(char *start, char *end){
     //copies chars from one string to another for strLen
     memcpy(strBuffer, start, strLen);
     strBuffer[strLen] = '\0';
-    //printf("strBuffer: %s\n", strBuffer);
-    //printf("strBuffer[strLen]: %s\n", strBuffer[strLen]);
     return strBuffer;
 }
 
-void sorter(int argc, char **argv){
+void sorter(FILE *input, int argc, char **argv){
+
+    //read in file
+    input = fopen(argv[1], "r");
+    if (NULL == input) {
+        fprintf(stderr, "Unable to open file\n");
+        exit(EXIT_FAILURE);
+    } else {
+        input = stdin;
+    }
+
+
     const int MAXSIZE = 1024;
 
     //stores the input from the user as a string variable
@@ -125,14 +132,7 @@ void sorter(int argc, char **argv){
     //char *row;
 
     while(fgets(row, MAXSIZE, stdin) != NULL){
-/*
-        size_t ln = strlen(row)-1;
-        printf(">>>>>>>> : %c\n", row[ln]);
-        if(row[ln]=='\n'){
-            printf("THERE IS A NEWLINE\n");
-            row[ln] = '\0';
-        }
-*/
+
         //strtok(row, "\n");
         char *_row = strdup(row);
 
@@ -140,12 +140,7 @@ void sorter(int argc, char **argv){
         Record *tmpList;
         tmpList = (Record *)malloc(sizeof(Record *));
 
-        /*
-        if(tmpList == NULL){
-            printf("Error with tmpList\n");
-            return 0;
-        }
-        */
+
 
         //parse string for category field_data (i.e. director_name => James Cameron)
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
@@ -162,38 +157,15 @@ void sorter(int argc, char **argv){
         recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
         recordList[index] = (Record *)malloc(sizeof(Record *)); 
         recordList[index] = tmpList;
-/*
-        printf("recordList[%d] -> field_data: %s\n", index, recordList[index]->field_data);        
-        printf("recordList[%d] -> original_row : %s\n", index, recordList[index]->original_row);
-*/
+
         index++;
     }
 
-    int i;
-
-/*
-    printf("\n\n++++++");
-    printf("BEFORE MERGESORT\n");
-    for(i = 0; i < index; i++) {
-        printf("%s\n", recordList[i] -> field_data);
-    }
-    printf("\n");
-    printf("++++++");
-*/
     //merge sort recordLists by field_data
-    // printf("\nindex-1: %d\n", index-1);
-
     merge_sort(recordList, 0, index-1);
-/*
-    printf("\n\n++++++");
-    printf("AFTER MERGESORT\n");
-    for(i = 0; i < index; i++) {
-        printf("%s\n", recordList[i] -> field_data);
-    }
-    printf("\n");
-    printf("++++++");
-*/
+
     //output
+    int i;
     printf("%s", first_row);
     for(i = 0; i < index; i++) {
         printf("%s", recordList[i] -> original_row);
@@ -207,7 +179,8 @@ void sorter(int argc, char **argv){
 
 int main(int argc, char **argv){
 
-    sorter(argc, argv);
+    FILE *input;
+    sorter(input, argc, argv);
     return 0;
 
 }
