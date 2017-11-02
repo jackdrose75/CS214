@@ -99,7 +99,8 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
     FILE *input;
     input = fopen(path, "r");
     
-    // printf("PATH : %s\n", path);
+    printf("PATH : %s\n", path);
+    printf("SUBPATH : %s\n", subpath);
 
     char *sortType;
     char *sortTopic;
@@ -125,14 +126,20 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
         inputDir = "."; //dir to start sort
         outputDir = "."; //dir to store sorted files
 
-    }
-    else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
-        //sort and store in new directory
-        // printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
-        sortType = argv[1]; //get argument to sort by, -c for column
-        sortTopic = argv[2]; //get topic i.e. 'movies'
-        inputDir = argv[4]; //dir to start sort
-        outputDir = argv[7]; //dir to store sorted files
+    } else if ((strcmp(argv[3], "-d")) == 0){
+        if (argc == 5 ) {
+            sortType = argv[1]; //get argument to sort by, -c for column
+            sortTopic = argv[2]; //get topic i.e. 'movies'
+            inputDir = argv[4]; //dir to start sort
+            outputDir = subpath;
+        } else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
+            //sort and store in new directory
+            // printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
+            sortType = argv[1]; //get argument to sort by, -c for column
+            sortTopic = argv[2]; //get topic i.e. 'movies'
+            inputDir = argv[4]; //dir to start sort
+            outputDir = argv[7]; //dir to store sorted files
+        }
     } else {
         //too few parameters
         printf("Invalid parameters");
@@ -217,12 +224,12 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
     strcat(sortedname,filename); 
 
     char *outpath;
-    outpath = (char*)malloc(strlen(subpath)+strlen(sortedname)+ 3);
+    outpath = (char*)malloc(strlen(outputDir)+strlen(sortedname)+ 3);
     if(outpath == NULL){
         printf("Failed to allocate memory\n");  
         exit(1);  
     }
-    strcpy(outpath,subpath);
+    strcpy(outpath,outputDir);
     strcat(outpath,"/");   
     strcat(outpath,sortedname); 
 
