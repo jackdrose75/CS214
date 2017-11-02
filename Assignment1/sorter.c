@@ -1,4 +1,7 @@
 #include "sorter.h"
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 // Main file to parse and pass data
 
@@ -90,16 +93,24 @@ char *buildString(char *start, char *end){
     return strBuffer;
 }
 
-void sorter(FILE *input, int argc, char **argv){
+void sorter(char *path, int argc, char **argv){
 
     //read in file
-    input = fopen(argv[1], "r");
-    if (NULL == input) {
-        fprintf(stderr, "Unable to open file\n");
-        exit(EXIT_FAILURE);
-    } else {
-        input = stdin;
-    }
+    FILE *input;
+    input = fopen(path, "r");
+
+    printf("PATH : %s\n", path);
+
+
+    // if (NULL == input) {
+    //     fprintf(stderr, "Unable to open file\n");
+    //     exit(EXIT_FAILURE);
+    // } else {
+    //     input = stdin;
+    // }
+
+
+    printf("OPENED FILE\n");
 
 
     const int MAXSIZE = 1024;
@@ -110,8 +121,12 @@ void sorter(FILE *input, int argc, char **argv){
 
     //get categories inputted by use
     //match by index number of column
-    char first_row[MAXSIZE];// = (char *)malloc(MAXSIZE);
-    fgets(first_row, MAXSIZE, stdin); //get first row
+    char first_row[MAXSIZE]; // = (char *)malloc(MAXSIZE);
+
+    
+
+    fgets(first_row, MAXSIZE, input); //get first row
+
     char *_first_row = strdup(first_row); //tmp to keep track for strsep
 
     char *cat; //pulled category from strsep
@@ -133,12 +148,12 @@ void sorter(FILE *input, int argc, char **argv){
     //initialize array of structs
     Record **recordList = (Record **)malloc(sizeof(Record **));
 
-    //get input line by line from stdin
+    //get input line by line from input
     int index = 0;
     char row[MAXSIZE];
     //char *row;
 
-    while(fgets(row, MAXSIZE, stdin) != NULL){
+    while(fgets(row, MAXSIZE, input) != NULL){
 
         //strtok(row, "\n");
         char *_row = strdup(row);
@@ -238,10 +253,6 @@ void pcounter(char* path){ // , char* colsort
         //if csv file
         else if(((sd->d_type) == DT_REG) && (strncmp(sd->d_name+length-4, ".csv", 4) == 0)){
             pc++;
-            
-            //
-            FILE *input;
-            sorter(input, argc, argv);
         }
     }
 }
@@ -281,7 +292,7 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
                 addArray(ptemp);
                 // printf("%d, ", ptemp);
                 // dir = opendir(path);
-                dirSearch(subpath); // , colsort, outdir
+                dirSearch(subpath, argc, argv); // , colsort, outdir
                 exit(0); // waits for child w/ specific pid to finish before continuing
             
                 }else{
@@ -300,15 +311,16 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
                 // child process
             ptemp = getpid();
             addArray(ptemp);
-            //printf("ACTUAL CHILD %d, ", ptemp);
-                //sort_csv(path, sd->d_name, sortpath, outdir);
+
+            //sort CSV
+            sorter(subpath, argc, argv);
+
             exit(0); // waits for child w/ specific pid to finish
             
             }
             else if(pid > 0) { // parent process
             printf("%d, ", pid);
-            fflush(stdout); 
-            }
+            fflush(stdout);            }
         }
     }
 
@@ -324,13 +336,37 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
 
 
 
-
-
 int main(int argc, char **argv){
 
-    //
-    // PID forking
-    //
+    //recursion forking variables
+    char* path, colsort, outdir;
+    
+    //checks for -c flag to be inputted
+    if(strcmp(argv[1], "-c")){
+        printf("Missing -c first flag, please input again\n");
+        exit(1);
+    }
+    
+    //read stdin parameters
+    if (argc == 3) { // <prgname> -c <input directory>
+        //search current directory
+        printf("Sorting by %s and storing in current directory.\n", argv[2]);
+        //char *sortType = argv[1]; //get argument to sort by, -c for column
+        path = argv[1]; //input directory
+    }
+    else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
+        //sort and store in new directory
+        printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
+        char *sortType = argv[1]; //get argument to sort by, -c for column
+        char *sortTopic = argv[2]; //get topic i.e. 'movies'
+        char *inputDir = argv[4]; //dir to start sort
+        char *outputDir = argv[7]; //dir to store sorted files
+    } else {
+        //too few parameters
+        printf("Invalid parameters");
+        return 0;
+    }
+
     p = getpid();
     //search directories
     printf("Initial PID: %d\n", getpid());
@@ -340,17 +376,16 @@ int main(int argc, char **argv){
     wait(NULL);
     pcounter(".");
     
-    int i;
-    for (i = 0; i < sizeof(pidArray)/sizeof(pid_t); i++){
-        //printf("%d, ",pidArray[i]);
-        /*  if (pidArray[i] == 0){
-            break;
-        }*/
-    }
+    // int i;
+    // for (i = 0; i < sizeof(pidArray)/sizeof(pid_t); i++){
+    //     //printf("%d, ",pidArray[i]);
+    //     /*  if (pidArray[i] == 0){
+    //         break;
+    //     }*/
+    // }
     printf("\nTotal # processes: %d\n", pc+1);
     // children counter + 1 original process
 
-    
 
 
 
