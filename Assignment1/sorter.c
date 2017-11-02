@@ -138,15 +138,15 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
             sortType = argv[1]; //get argument to sort by, -c for column
             sortTopic = argv[2]; //get topic i.e. 'movies'
             inputDir = argv[4]; //dir to start sort
-            outputDir = argv[7]; //dir to store sorted files
+            outputDir = argv[6]; //dir to store sorted files
         } else {
             //too few parameters
-            printf("Invalid parameters");
+            printf("Invalid parameters\n");
             exit(0);
         }
     } else {
         //too few parameters
-        printf("Invalid parameters");
+        printf("Invalid parameters\n");
         exit(0);
     }
 
@@ -428,21 +428,25 @@ int main(int argc, char **argv){
             sortTopic = argv[2]; //get topic i.e. 'movies'
             inputDir = argv[4]; //dir to start sort
             outputDir = inputDir;
+
         } else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
             //sort and store in new directory
             // printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
             sortType = argv[1]; //get argument to sort by, -c for column
             sortTopic = argv[2]; //get topic i.e. 'movies'
             inputDir = argv[4]; //dir to start sort
-            outputDir = argv[7]; //dir to store sorted files
+            outputDir = argv[6]; //dir to store sorted files
+
+            printf("outputDir : %s\n", outputDir);
+
         } else {
             //too few parameters
-            printf("Invalid parameters");
+            printf("Invalid parameters\n");
             exit(0);
         }
     } else {
         //too few parameters
-        printf("Invalid parameters");
+        printf("Invalid parameters\n");
         exit(0);
     }
 
