@@ -98,7 +98,7 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
     //read in file
     FILE *input;
     input = fopen(path, "r");
-    
+
     // printf("PATH : %s\n", path);
     // printf("SUBPATH : %s\n", subpath);
 
@@ -317,9 +317,7 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
     struct dirent* sd;
     pid_t pid; //assign fork to this value for child process
     pid_t ptemp; //for holding child pid vals to insert in pidArray
-    
 
-    // printf("\n\npath : %s\n\n", path);
 
     // null case: failed to open directory
     if(dir == NULL) {
@@ -333,7 +331,8 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
         char* fullpath;
         int length = strlen(sd->d_name); 
         fullpath = pathcat(path, sd->d_name);
-               
+        
+
         //get sub directories excluding current (.) and prev directories (..)
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)){
             //printf("DIRECTORY HERE: %s\n\n", sd->d_name); //need to fork here
