@@ -99,8 +99,8 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
     FILE *input;
     input = fopen(path, "r");
     
-    printf("PATH : %s\n", path);
-    printf("SUBPATH : %s\n", subpath);
+    // printf("PATH : %s\n", path);
+    // printf("SUBPATH : %s\n", subpath);
 
     char *sortType;
     char *sortTopic;
