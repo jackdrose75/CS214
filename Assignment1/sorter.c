@@ -236,8 +236,8 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
 
     FILE *outfp = fopen(outpath, "w");
 
-    printf("original file name: %s\n", filename);
-    printf("output file name: %s\n", outpath);
+    // printf("original file name: %s\n", filename);
+    // printf("output file name: %s\n", outpath);
 
     int i;
     fprintf(outfp, first_row);
@@ -394,9 +394,50 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
 
 int main(int argc, char **argv){
 
-    //recursion forking variables
-    char* path, colsort, outdir;
+    char *sortType;
+    char *sortTopic;
+    char *inputDir;
+    char *outputDir;
+
+    const int MAXSIZE = 1024;
+
+    if(strcmp(argv[1], "-c")){
+        printf("Missing -c first flag, please input again\n");
+        exit(1);
+    }
     
+    //read stdin parameters
+    if (argc == 3) { // <prgname> -c <input directory>
+        //search current directory
+        // printf("Sorting by %s and storing in current directory.\n", argv[2]);
+        //char *sortType = argv[1]; //get argument to sort by, -c for column
+        // path = argv[1]; //input directory
+        sortType = argv[1]; //get argument to sort by, -c for column
+        sortTopic = argv[2]; //get topic i.e. 'movies'
+
+        inputDir = "."; //dir to start sort
+        outputDir = "."; //dir to store sorted files
+
+    } else if ((strcmp(argv[3], "-d")) == 0){
+        if (argc == 5 ) {
+            sortType = argv[1]; //get argument to sort by, -c for column
+            sortTopic = argv[2]; //get topic i.e. 'movies'
+            inputDir = argv[4]; //dir to start sort
+            outputDir = ".";
+        } else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
+            //sort and store in new directory
+            // printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
+            sortType = argv[1]; //get argument to sort by, -c for column
+            sortTopic = argv[2]; //get topic i.e. 'movies'
+            inputDir = argv[4]; //dir to start sort
+            outputDir = argv[7]; //dir to store sorted files
+        }
+    } else {
+        //too few parameters
+        printf("Invalid parameters");
+        exit(0);
+    }
+
     //checks for -c flag to be inputted
     p = getpid();
     //search directories
@@ -404,10 +445,10 @@ int main(int argc, char **argv){
     printf("PIDS of all child processes: ");
     fflush(stdout);
 
-    dirSearch(".", argc, argv);
+    dirSearch(inputDir, argc, argv);
 
     wait(NULL);
-    pcounter(".");
+    pcounter(inputDir);
     
 
     printf("\nTotal # processes: %d\n", pc+1);
