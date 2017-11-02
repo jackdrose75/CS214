@@ -253,8 +253,6 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
     free(recordList);
 }
 
-
-//>>>>>>>>>>>>TESTSCAN2.C>>>>>>>>>>>>>>>>>>
 void addArray(pid_t p){
     //printf("pidArray: %d %d\n", pa, p);
     pidArray[pa] = p;
@@ -276,7 +274,8 @@ char* pathcat(const char* path, const char* filename){
     if(subpath == NULL){
         printf("Failed to allocate memory\n");  
         exit(1);  
-    }  
+    }
+
     strcpy(subpath,path);
     strcat(subpath,"/");   
     strcat(subpath,filename);  
@@ -319,6 +318,9 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
     pid_t pid; //assign fork to this value for child process
     pid_t ptemp; //for holding child pid vals to insert in pidArray
     
+
+    // printf("\n\npath : %s\n\n", path);
+
     // null case: failed to open directory
     if(dir == NULL) {
         printf("Error: Directory N/A");
@@ -344,9 +346,7 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
            if (!pid){
                 // child process
                 ptemp = getpid();
-                addArray(ptemp);
-                // printf("%d, ", ptemp);
-                // dir = opendir(path);
+                addArray(ptemp);                
                 dirSearch(fullpath, argc, argv); // , colsort, outdir
                 exit(0); // waits for child w/ specific pid to finish before continuing
             

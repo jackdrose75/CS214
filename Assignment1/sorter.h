@@ -43,7 +43,7 @@ char* pathcat(const char* str1,const char* str2);
 
 void pcounter(char* path);
 
-void dirSearch(char *path, void dirSearch(char *path, int argc, char **argv));
+void dirSearch(char *path, int argc, char **argv);
 
 
 
