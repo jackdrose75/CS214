@@ -99,9 +99,6 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
     FILE *input;
     input = fopen(path, "r");
 
-    // printf("PATH : %s\n", path);
-    // printf("SUBPATH : %s\n", subpath);
-
     char *sortType;
     char *sortTopic;
     char *inputDir;
@@ -435,8 +432,6 @@ int main(int argc, char **argv){
             sortTopic = argv[2]; //get topic i.e. 'movies'
             inputDir = argv[4]; //dir to start sort
             outputDir = argv[6]; //dir to store sorted files
-
-            printf("outputDir : %s\n", outputDir);
 
         } else {
             //too few parameters
