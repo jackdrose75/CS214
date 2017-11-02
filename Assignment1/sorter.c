@@ -93,40 +93,60 @@ char *buildString(char *start, char *end){
     return strBuffer;
 }
 
-void sorter(char *path, int argc, char **argv){
+void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
 
     //read in file
     FILE *input;
     input = fopen(path, "r");
+    
+    // printf("PATH : %s\n", path);
 
-    printf("PATH : %s\n", path);
-
-
-    // if (NULL == input) {
-    //     fprintf(stderr, "Unable to open file\n");
-    //     exit(EXIT_FAILURE);
-    // } else {
-    //     input = stdin;
-    // }
-
-
-    printf("OPENED FILE\n");
-
+    char *sortType;
+    char *sortTopic;
+    char *inputDir;
+    char *outputDir;
 
     const int MAXSIZE = 1024;
 
+    if(strcmp(argv[1], "-c")){
+        printf("Missing -c first flag, please input again\n");
+        exit(1);
+    }
+    
+    //read stdin parameters
+    if (argc == 3) { // <prgname> -c <input directory>
+        //search current directory
+        // printf("Sorting by %s and storing in current directory.\n", argv[2]);
+        //char *sortType = argv[1]; //get argument to sort by, -c for column
+        // path = argv[1]; //input directory
+        sortType = argv[1]; //get argument to sort by, -c for column
+        sortTopic = argv[2]; //get topic i.e. 'movies'
+
+        inputDir = "."; //dir to start sort
+        outputDir = "."; //dir to store sorted files
+
+    }
+    else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
+        //sort and store in new directory
+        // printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
+        sortType = argv[1]; //get argument to sort by, -c for column
+        sortTopic = argv[2]; //get topic i.e. 'movies'
+        inputDir = argv[4]; //dir to start sort
+        outputDir = argv[7]; //dir to store sorted files
+    } else {
+        //too few parameters
+        printf("Invalid parameters");
+        exit(0);
+    }
+
     //stores the input from the user as a string variable
-    char *sortType = argv[1]; //get argument to sort by, -c for column
-    char *sortTopic = argv[2]; //get topic i.e. 'movies'
+    // char *sortType = argv[1]; //get argument to sort by, -c for column
+    // char *sortTopic = argv[2]; //get topic i.e. 'movies'
 
     //get categories inputted by use
     //match by index number of column
     char first_row[MAXSIZE]; // = (char *)malloc(MAXSIZE);
-
-    
-
     fgets(first_row, MAXSIZE, input); //get first row
-
     char *_first_row = strdup(first_row); //tmp to keep track for strsep
 
     char *cat; //pulled category from strsep
@@ -187,15 +207,38 @@ void sorter(char *path, int argc, char **argv){
     merge_sort(recordList, 0, index-1);
 
     //output
+    char* sortedname;  
+    sortedname=(char*)malloc(strlen(subpath)+strlen(filename)+ 3);
+    if(sortedname == NULL){
+        printf("Failed to allocate memory\n");  
+        exit(1);  
+    }  
+    strcpy(sortedname,"-sorted-");
+    strcat(sortedname,filename); 
+
+    char *outpath;
+    outpath = (char*)malloc(strlen(subpath)+strlen(sortedname)+ 3);
+    if(outpath == NULL){
+        printf("Failed to allocate memory\n");  
+        exit(1);  
+    }
+    strcpy(outpath,subpath);
+    strcat(outpath,"/");   
+    strcat(outpath,sortedname); 
+
+
+    FILE *outfp = fopen(outpath, "w");
+
+    printf("subpath: %s\n", subpath);
+
     int i;
-    printf("%s", first_row);
+    fprintf(outfp, first_row);
     for(i = 0; i < index; i++) {
-        printf("%s", recordList[i] -> original_row);
+        fprintf(outfp, recordList[i] -> original_row);
     }
 
     //printf("Here\n");
     free(recordList);
-
 }
 
 
@@ -214,17 +257,17 @@ void printpids(pid_t* pa){
 }
 
 // allocates memory for subpaths and also appends /
-char* pathcat(const char* str1,const char* str2){ 
+char* pathcat(const char* path, const char* filename){ 
     char* subpath;  
-    subpath=(char*)malloc(strlen(str1)+strlen(str2)+ 3);
+    subpath=(char*)malloc(strlen(path)+strlen(filename)+ 3);
 
     if(subpath == NULL){
-        printf("failed to allocate memory\n");  
+        printf("Failed to allocate memory\n");  
         exit(1);  
     }  
-    strcpy(subpath,str1);
+    strcpy(subpath,path);
     strcat(subpath,"/");   
-    strcat(subpath,str2);  
+    strcat(subpath,filename);  
     return subpath;  
 } 
 
@@ -273,9 +316,9 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
 
     // searches through current directory and prints files & subdirs inside
     while((sd=readdir(dir)) != NULL){
-        char* subpath;
+        char* fullpath;
         int length = strlen(sd->d_name); 
-        subpath = pathcat(path, sd->d_name);
+        fullpath = pathcat(path, sd->d_name);
                
         //get sub directories excluding current (.) and prev directories (..)
         if (((sd->d_type) == DT_DIR) && (strcmp(sd->d_name, ".") != 0) && (strcmp(sd->d_name, "..") != 0)){
@@ -292,7 +335,7 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
                 addArray(ptemp);
                 // printf("%d, ", ptemp);
                 // dir = opendir(path);
-                dirSearch(subpath, argc, argv); // , colsort, outdir
+                dirSearch(fullpath, argc, argv); // , colsort, outdir
                 exit(0); // waits for child w/ specific pid to finish before continuing
             
                 }else{
@@ -312,25 +355,30 @@ void dirSearch(char *path, int argc, char **argv){ // , char *colsort, char* out
             ptemp = getpid();
             addArray(ptemp);
 
+            char *filename = sd->d_name;
+
             //sort CSV
-            sorter(subpath, argc, argv);
+
+
+            printf("fullpath : %s\n", fullpath);
+
+            sorter(filename, fullpath, path, argc, argv);
 
             exit(0); // waits for child w/ specific pid to finish
             
             }
             else if(pid > 0) { // parent process
-            printf("%d, ", pid);
-            fflush(stdout);            }
+                printf("%d, ", pid);
+                fflush(stdout);
+            }
         }
     }
 
    // printf("PIDS of all child processes:\n\n"); 
     pid_t waitid;
-    //printf("wait here:::");
-    while ((waitid = wait(NULL)) > 0){ 
-    
-    //printf("---");      
-        // exit when -1 all children done;
+    // allows for the children processes to finish running
+    while ((waitid = wait(NULL)) > 0){  
+        continue;
     }   
 }
 
@@ -342,52 +390,20 @@ int main(int argc, char **argv){
     char* path, colsort, outdir;
     
     //checks for -c flag to be inputted
-    if(strcmp(argv[1], "-c")){
-        printf("Missing -c first flag, please input again\n");
-        exit(1);
-    }
-    
-    //read stdin parameters
-    if (argc == 3) { // <prgname> -c <input directory>
-        //search current directory
-        printf("Sorting by %s and storing in current directory.\n", argv[2]);
-        //char *sortType = argv[1]; //get argument to sort by, -c for column
-        path = argv[1]; //input directory
-    }
-    else if ((argc == 7) && (strcmp(argv[3], "-d")) == 0) {
-        //sort and store in new directory
-        printf("Sorting by %s and starting in %s and storing in %s\n", argv[2], argv[4], argv[6]);
-        char *sortType = argv[1]; //get argument to sort by, -c for column
-        char *sortTopic = argv[2]; //get topic i.e. 'movies'
-        char *inputDir = argv[4]; //dir to start sort
-        char *outputDir = argv[7]; //dir to store sorted files
-    } else {
-        //too few parameters
-        printf("Invalid parameters");
-        return 0;
-    }
-
     p = getpid();
     //search directories
     printf("Initial PID: %d\n", getpid());
     printf("PIDS of all child processes: ");
     fflush(stdout);
+
     dirSearch(".", argc, argv);
+
     wait(NULL);
     pcounter(".");
     
-    // int i;
-    // for (i = 0; i < sizeof(pidArray)/sizeof(pid_t); i++){
-    //     //printf("%d, ",pidArray[i]);
-    //     /*  if (pidArray[i] == 0){
-    //         break;
-    //     }*/
-    // }
+
     printf("\nTotal # processes: %d\n", pc+1);
     // children counter + 1 original process
-
-
-
 
     return 0;
 

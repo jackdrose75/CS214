@@ -28,7 +28,7 @@ void merge_sort(Record** a, int low, int high);
 
 // csv sorter
 // run sorter on csv
-void sorter(char *path, int argc, char **argv);
+void sorter(char *filename, char *path, char *subpath, int argc, char **argv);
 // Parses string for delimiters and returns pointer to the string
 char *getCat(char *line, int catIndex);
 // Builds string if it detects a ""
