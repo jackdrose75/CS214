@@ -208,7 +208,7 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
 
     //output
     char* sortedname;  
-    sortedname=(char*)malloc(strlen(subpath)+strlen(filename)+ 3);
+    sortedname=(char*)malloc(strlen("-sorted-")+strlen(filename)+ 3);
     if(sortedname == NULL){
         printf("Failed to allocate memory\n");  
         exit(1);  
@@ -229,7 +229,8 @@ void sorter(char *filename, char *path, char *subpath, int argc, char **argv){
 
     FILE *outfp = fopen(outpath, "w");
 
-    printf("subpath: %s\n", subpath);
+    printf("original file name: %s\n", filename);
+    printf("output file name: %s\n", outpath);
 
     int i;
     fprintf(outfp, first_row);
