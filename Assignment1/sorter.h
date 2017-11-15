@@ -17,6 +17,12 @@ typedef struct{
     char *original_row; //holds pointer to array of row.
 } Record;
 
+//struct to hold input parameters
+typedef struct{
+    char *sortTopic;
+    char *inputDir;
+    char *outputDir;
+} InputParams;
 
 // mergesort
 //compares two floats like strcmp
@@ -28,7 +34,7 @@ void merge_sort(Record** a, int low, int high);
 
 // csv sorter
 // run sorter on csv
-void sorter(char *filename, char *path, char *subpath, int argc, char **argv);
+void sorter(char *filename, char *path, char *subpath, InputParams* inputDetails);
 // Parses string for delimiters and returns pointer to the string
 char *getCat(char *line, int catIndex);
 // Builds string if it detects a ""
@@ -43,7 +49,7 @@ char* pathcat(const char* str1,const char* str2);
 
 void pcounter(char* path);
 
-void dirSearch(char *path, int argc, char **argv);
+void dirSearch(char *path, InputParams* inputDetails);
 
 
 
