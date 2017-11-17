@@ -1,0 +1,15 @@
+cs214 assignment1 log:
+
+10.23.2017 -
+Discussed problems with project0 that will occur in assimgent1.
+Read through assignment1 and planned out steps required to implement code.
+
+1) Search through current directory to find all CSV files/subdirectories.
+2) Spawn sorter.c from assignment 0, fork children of sorter into subdirectories.
+3) Print the PID, PPID, and counter of total processes.
+   Output the new sorted CSV files.
+
+
+10.24.2017 - 
+created a testscanner.c that goes into current directory and locates all .csv files.
+needs to be done: implement a recursive function along with finding subdirectories.
