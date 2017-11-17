@@ -23,6 +23,25 @@ int isNum(char *str){
     return 1;
 }
 
+int stringcmp (char * a, char * b){
+    
+    if (strcasecmp(a,b)<0){
+    
+        return -1;  // a is before b 
+    
+    }
+    else if (strcasecmp(a,b) == 0){ //A before a
+    
+    
+        if (strcmp(a,b) <= 0){
+            return -1; 
+        
+        }
+    }
+    return 1; 
+
+}
+
 //return 1 if num1 greater than num2
 //return 0 if num1 == num2
 //return -1 if num1 < num2
@@ -84,7 +103,7 @@ void merge(Record** a, int low, int mid, int high){
         //compare strings if string
         else { 
 
-            if(strcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
+            if(stringcmp(top[i] -> field_data, bottom[j] -> field_data) < 0){
                 a[k] = top[i++];
                 //strcpy(a[k++] -> field_data, top[i++] -> field_data) ;
             }

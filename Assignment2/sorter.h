@@ -27,6 +27,8 @@ typedef struct{
 // mergesort
 //compares two floats like strcmp
 int numcmp(float num1, float num2);
+
+int stringcmp (char * a, char * b);
 // merge function to be called after merge_sort
 void merge(Record** a, int low, int mid, int high);
 // merge_sort function that will recursively call merge and itself
