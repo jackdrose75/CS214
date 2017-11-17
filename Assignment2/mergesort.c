@@ -42,8 +42,8 @@ void merge(Record** a, int low, int mid, int high){
     int bottomL = high - mid;
     int i, j, k;
     
-    Record** top = (Record **)malloc(sizeof(Record **)*topL);
-    Record** bottom = (Record **)malloc(sizeof(Record **)*bottomL);
+    Record** top = (Record **)malloc(sizeof(Record *)*topL);
+    Record** bottom = (Record **)malloc(sizeof(Record *)*bottomL);
 
     for(i = 0; i < topL; i++){
         top[i] = malloc(sizeof(Record));

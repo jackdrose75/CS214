@@ -132,7 +132,7 @@ void sorter(char *filename, char *path, char *subpath, InputParams* inputDetails
 
         //temporary struct to hold parsed data
         Record *tmpList;
-        tmpList = (Record *)malloc(sizeof(Record *));
+        tmpList = (Record *)malloc(sizeof(Record));
 
         //parse string for category field_data (i.e. director_name => James Cameron)
         char *tmp = getCat(strdup(_row), cat_index); //send _row and cat index into getCat to be parsed, extract pulled field_data
@@ -143,8 +143,8 @@ void sorter(char *filename, char *path, char *subpath, InputParams* inputDetails
         tmpList -> original_row = _row;
 
         //add tmpList struct to array of structs recordList[index] at index
-        recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record **));
-        recordList[index] = (Record *)malloc(sizeof(Record *)); 
+        recordList = (Record **)realloc(recordList, (index+1)*sizeof(Record *));
+        recordList[index] = (Record *)malloc(sizeof(Record)); 
         recordList[index] = tmpList;
 
         index++;
