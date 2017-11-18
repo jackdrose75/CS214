@@ -119,7 +119,7 @@ void sorter(char *filename, char *path, char *subpath, InputParams* inputDetails
     }
 
     //initialize array of structs
-    Record **recordList = (Record **)malloc(sizeof(Record **));
+    Record **recordList = (Record **)malloc(sizeof(Record *));
 
     //get input line by line from input
     int index = 0;
