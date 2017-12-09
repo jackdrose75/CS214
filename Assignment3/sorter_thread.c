@@ -3,7 +3,7 @@
 #include <dirent.h>
 #include "sorter.h"
 #include "mergesort.c"
-#include "linkedlist_problem.c"
+#include "linkedlist.c"
 #include <pthread.h>
 #include <sys/syscall.h>
 #include <sys/stat.h>
