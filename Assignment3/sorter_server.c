@@ -1,4 +1,4 @@
-#include <sys.socket.h>
+#include <sys/socket.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +11,7 @@
 #include <ctype.h>
 #define BUF_SIZE 256
 //move above to sorter_server.h
-#include "sorter_server.h"
+// #include "sorter_server.h"
 
 /*
 Server
@@ -50,13 +50,14 @@ Received connections from: <ipaddress>,<ipaddress>,<ipaddress>,…
 int main(int argc, char** argv) {
 
 	//Check input format.
-	if !((argc == 3) && (strcmp(argv[1],"-p")==0) && isdigit(argv[2])) {
+	if (!((argc == 3) && (strcmp(argv[1],"-p")==0) && isdigit(argv[2]))) {
 		printf("Incorrect input.\n");
 		return 1;
 	}	
 
 	//Declare variables.
-	struct sockaddr_in server_address;
+	struct sockaddr_in server_address, client_address;
+	int clisize; //client address size
 	int port, sockfd;
 
 	//Initialize port number into portnum
@@ -77,7 +78,7 @@ int main(int argc, char** argv) {
 	memset(&server_address, '0', sizeof(server_address));
 
 	//Bind
-	if(bind(sockfd, (struct sockaddr_in*)&server_address, sizeof(server_address))<0) {
+	if(bind(sockfd, (struct sockaddr*)&server_address, sizeof(server_address))<0) {
 		printf("Binding server to socket unsuccessful.\n");
 		return -1;
 	}
@@ -92,7 +93,8 @@ int main(int argc, char** argv) {
 	printf("Listening to socket unsuccessful.\n");
 
 	while(1) {
-		int getfilefd = accept(sockfd, (struct sockaddr_in*)NULL, NULL);
+		clisize = sizeof(client_address);
+		int getfilefd = accept(sockfd, (struct sockaddr*)&client_address, &clisize);
 		//Open sent file.
 		FILE *fp = fopen("filename.txt", "rb");
 		if(fp == NULL) {
