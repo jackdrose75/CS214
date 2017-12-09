@@ -9,7 +9,13 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <ctype.h>
-#define BUF_SIZE 256
+
+#include "sorter.h"
+
+#define BUF_SIZE 1024
+
+
+
 //move above to sorter_server.h
 // #include "sorter_server.h"
 
@@ -49,81 +55,88 @@ Received connections from: <ipaddress>,<ipaddress>,<ipaddress>,…
 //INPUT: ./sorter_server -p 12345
 int main(int argc, char** argv) {
 
-	//Check input format.
-	if (!((argc == 3) && (strcmp(argv[1],"-p")==0) && isdigit(argv[2]))) {
-		printf("Incorrect input.\n");
-		return 1;
-	}	
+    //Declare variables.
+    struct sockaddr_in server_address, client_address;
+    int clisize; //client address size
+    int port, sockfd;
 
-	//Declare variables.
-	struct sockaddr_in server_address, client_address;
-	int clisize; //client address size
-	int port, sockfd;
 
-	//Initialize port number into portnum
-	port = atoi(argv[2]);
+    //Check input format.
+    int args;
+    for (args = 0; args < argc; args++){
+        if (strcmp(argv[args], "-p") == 0){
+            if (argv[args+1]){
+                //Initialize port number into portnum
+                // printf("argv[%d+1]: %s\n", args, argv[args+1]);
+                port = atoi(argv[args+1]);
+            } else {
+                printf("No port number provided\n");
+                return -1;
+            }
+        }
+    }
 
-	//Fill server struct
-	bzero((char *)&server_address, sizeof(struct sockaddr_in));
-	server_address.sin_family = AF_INET;
-	server_address.sin_port = htons(port);
-	server_address.sin_addr.s_addr = htonl(INADDR_ANY);					
+    //Fill server struct
+    // bzero((char *)&server_address, sizeof(struct sockaddr_in));
+    memset(&server_address, '0', sizeof(server_address));
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(port);
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);                 
 
-	//Creates a socket
-	if((sockfd = socket(AF_INET, SOCK_STREAM, 0))<0) {
-		printf("Socket creation unsuccessful.\n");
-		return -1;
-	}
-	printf("Socket creation successful.\n");
-	memset(&server_address, '0', sizeof(server_address));
+    //Creates a socket
+    if((sockfd = socket(AF_INET, SOCK_STREAM, 0))<0) {
+        printf("Socket creation unsuccessful.\n");
+        return -1;
+    }
+    printf("Socket creation successful.\n");
 
-	//Bind
-	if(bind(sockfd, (struct sockaddr*)&server_address, sizeof(server_address))<0) {
-		printf("Binding server to socket unsuccessful.\n");
-		return -1;
-	}
-	printf("Binding server to socket successful.\n");
-	printf("Congratulations. Server is now up and running.\n");
+    //Bind
+    if(bind(sockfd, (struct sockaddr*)&server_address, sizeof(server_address))<0) {
+        printf("Binding server to socket unsuccessful.\n");
+        return -1;
+    }
+    printf("Binding server to socket successful.\n");
+    printf("Congratulations. Server is now up and running.\n");
 
-	//Listen
-	if(listen(sockfd, 20) == -1) {
-		printf("Listening to socket unsuccessful.\n");
-		return -1;
-	}
-	printf("Listening to socket unsuccessful.\n");
+    //Listen
+    if(listen(sockfd, 20) <0 ) {
+        printf("Listening to socket unsuccessful.\n");
+        return -1;
+    }
+    printf("Listening to socket...\n");
 
-	while(1) {
-		clisize = sizeof(client_address);
-		int getfilefd = accept(sockfd, (struct sockaddr*)&client_address, &clisize);
-		//Open sent file.
-		FILE *fp = fopen("filename.txt", "rb");
-		if(fp == NULL) {
-			printf("File open unsuccessful.\n");
-			return 1;
-		}
-		printf("File open successful.\n");
-		while(1) {
-			//Read file in blocks of BUF_SIZE bytes
-			unsigned char buff[BUF_SIZE]={0};
-			int nread = fread(buff,1,BUF_SIZE,fp);
-			printf("Bytes read: %d\n", nread);
-			//If read was successful, send data
-			if(nread > 0) {
-				printf("Sending data now.\n");
-				write(getfilefd,buff,nread);
-			}
-			if(nread < BUF_SIZE) {
-				if(feof(fp)) {
-					printf("End of file.\n");
-				}
-				if(ferror(fp)) {
-					printf("Reading error.\n");
-				}
-				break;
-			}
-		}
-		close(getfilefd);
-		sleep(1);
-	}
-	return 0;
+    while(1) {
+        clisize = sizeof(client_address);
+        int getfilefd = accept(sockfd, (struct sockaddr*)&client_address, &clisize);
+        //Open sent file.
+        FILE *fp = fopen("filename.txt", "rb");
+        if(fp == NULL) {
+            printf("File open unsuccessful.\n");
+            return 1;
+        }
+        printf("File open successful.\n");
+        while(1) {
+            //Read file in blocks of BUF_SIZE bytes
+            unsigned char buff[BUF_SIZE]={0};
+            int nread = fread(buff,1,BUF_SIZE,fp);
+            printf("Bytes read: %d\n", nread);
+            //If read was successful, send data
+            if(nread > 0) {
+                printf("Sending data now.\n");
+                write(getfilefd,buff,nread);
+            }
+            if(nread < BUF_SIZE) {
+                if(feof(fp)) {
+                    printf("End of file.\n");
+                }
+                if(ferror(fp)) {
+                    printf("Reading error.\n");
+                }
+                break;
+            }
+        }
+        close(getfilefd);
+        sleep(1);
+    }
+    return 0;
 }
