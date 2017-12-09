@@ -58,22 +58,28 @@ int main(int argc, char** argv) {
     //Declare variables.
     struct sockaddr_in server_address, client_address;
     int clisize; //client address size
-    int port, sockfd;
+    int port, listenfd;
 
 
     //Check input format.
-    int args;
+    int args, p_flag;
+    p_flag = 0;
     for (args = 0; args < argc; args++){
         if (strcmp(argv[args], "-p") == 0){
             if (argv[args+1]){
                 //Initialize port number into portnum
                 // printf("argv[%d+1]: %s\n", args, argv[args+1]);
                 port = atoi(argv[args+1]);
+                p_flag = 1;
             } else {
                 printf("No port number provided\n");
                 return -1;
             }
         }
+    }
+    if (p_flag == 0){
+        printf("No port provided\n");
+        return -1;
     }
 
     //Fill server struct
@@ -84,14 +90,14 @@ int main(int argc, char** argv) {
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);                 
 
     //Creates a socket
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0))<0) {
+    if((listenfd = socket(AF_INET, SOCK_STREAM, 0))<0) {
         printf("Socket creation unsuccessful.\n");
         return -1;
     }
     printf("Socket creation successful.\n");
 
     //Bind
-    if(bind(sockfd, (struct sockaddr*)&server_address, sizeof(server_address))<0) {
+    if(bind(listenfd, (struct sockaddr*)&server_address, sizeof(server_address))<0) {
         printf("Binding server to socket unsuccessful.\n");
         return -1;
     }
@@ -99,7 +105,7 @@ int main(int argc, char** argv) {
     printf("Congratulations. Server is now up and running.\n");
 
     //Listen
-    if(listen(sockfd, 20) <0 ) {
+    if(listen(listenfd, 20) <0 ) {
         printf("Listening to socket unsuccessful.\n");
         return -1;
     }
@@ -107,7 +113,7 @@ int main(int argc, char** argv) {
 
     while(1) {
         clisize = sizeof(client_address);
-        int getfilefd = accept(sockfd, (struct sockaddr*)&client_address, &clisize);
+        int getfilefd = accept(listenfd, (struct sockaddr*)&client_address, &clisize);
         //Open sent file.
         FILE *fp = fopen("filename.txt", "rb");
         if(fp == NULL) {
