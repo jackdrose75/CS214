@@ -9,6 +9,8 @@
 #include <netdb.h>
 #include <ctype.h>
 #include <fcntl.h>
+
+#define INET_ADDRSTLEN 16
 #define BUF_SIZE 1024
 //move above to sorter_server.h
 // #include "sorter_server.h"
@@ -93,21 +95,41 @@ int send_file(int socket, char* filename) {
 int main(int argc, char** argv) {
 
     //Check input format.
-    if (!((argc == 3) && (strcmp(argv[1],"-p")==0) && isdigit(argv[2]))) {
-        printf("Incorrect input.\n");
-        return 1;
-    }   
+    int args, p_flag, port;
+    p_flag = 0; //flag for if port given
+    for (args = 0; args < argc; args++){
+        if (strcmp(argv[args], "-p") == 0){
+            if (argv[args+1]){
+                //Initialize port number into portnum
+                port = atoi(argv[args+1]);
+                p_flag = 1;
+            } else {
+                printf("No port number provided\n");
+                return -1;
+            }
+        }
+    }
+    if (p_flag == 0){
+        printf("No port provided\n");
+        return -1;
+    }
+
+    // if (!((argc == 3) && (strcmp(argv[1],"-p")==0) && isdigit(argv[2]))) {
+    //     printf("Incorrect input.\n");
+    //     return 1;
+    // }   
 
     //Declare variables.
     struct sockaddr_in server_address, client_address;
     int clisize;    //client address size
-    int port, sockfd, connfd;
+    // int port, sockfd, connfd;
+    int sockfd, connfd;
 
     char file_name [BUF_SIZE];          //File name to be sent
     char print_addr [INET_ADDRSTRLEN];  //Readable IP address
 
     //Initialize port number into port
-    port = atoi(argv[2]);
+    // port = atoi(argv[2]);
 
     //Fill server struct
     memset(&server_address, '0', sizeof(server_address));
