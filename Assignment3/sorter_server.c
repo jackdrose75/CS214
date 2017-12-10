@@ -158,9 +158,8 @@ int main(int argc, char** argv) {
         printf("Listening to socket unsuccessful.\n");
         return -1;
     }
-    printf("Listening to socket unsuccessful.\n");
 
-    for(;;) {
+    while(1) {
         clisize = sizeof(client_address);
         printf("Waiting for client connection...\n\n");
         if((connfd = accept(sockfd, (struct sockaddr*)&client_address, &clisize))<0) {
